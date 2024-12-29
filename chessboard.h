@@ -17,5 +17,6 @@ class Chessboard {
 
         void configureBoards(std::string fen);
         void prettyPrint();
+        int main();
         Chessboard();
 };
