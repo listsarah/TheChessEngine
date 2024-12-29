@@ -26,62 +26,86 @@ void Chessboard::configureBoards(std::string fen){
     if(currChar == "K"){
       this->whiteKingBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "White King" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "White King" << "\n";
+      #endif
     }
     else if (currChar == "Q"){
       this->whiteQueenBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "White Queen" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "White Queen" << "\n";
+      #endif
     }
     else if (currChar == "R"){
       this->whiteRookBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "White Rook" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "White Rook" << "\n";
+      #endif
     }
     else if (currChar == "B"){
       this->whiteBishopBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "White Bishop" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "White Bishop" << "\n";
+      #endif
     }
     else if (currChar == "N"){
       this->whiteKnightBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "White Knight" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "White Knight" << "\n";
+      #endif
     }
     else if (currChar == "P"){
       this->whitePawnBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "White Pawn" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "White Pawn" << "\n";
+      #endif
     }
     else if(currChar == "k"){
       this->blackKingBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "Black King" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "Black King" << "\n";
+      #endif
     }
     else if (currChar == "q"){
       this->blackQueenBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
+      #ifdef DEBUG_PRINT_ENABLED
       std::cout << "Black Queen" << "\n";
+      #endif
     }
     else if (currChar == "r"){
       this->blackRookBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "Black Rook" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "Black Rook" << "\n";
+      #endif
     }
     else if (currChar == "b"){
       this->blackBishopBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "Black Bishop" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "Black Bishop" << "\n";
+      #endif
     }
     else if (currChar == "n"){
       this->blackKnightBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "Black Knight" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "Black Knight" << "\n";
+      #endif
     }
     else if (currChar == "p"){
       this->blackPawnBoard |= u_int64_t(1) << currBoardIndex;
       currBoardIndex++;
-      std::cout << "Black Pawn" << "\n";
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "Black Pawn" << "\n";
+      #endif
     }
     else if(currChar != "/"){
       try
