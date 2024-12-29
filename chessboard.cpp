@@ -3,6 +3,7 @@
 
 Chessboard::Chessboard(){
   this->configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+  this->prettyPrint();
 }
 
 void Chessboard::configureBoards(std::string fen){
@@ -72,8 +73,28 @@ void Chessboard::configureBoards(std::string fen){
   }
 }
 void Chessboard::prettyPrint(){
+  std::string board[] = {};
   for(int i = 0; i<64; i++){
-    
+    if(this->whiteKingBoard && 1) board[i] = "K";
+    else if(this->whiteQueenBoard && 1) board[i] = "Q";
+    else if(this->whiteRookBoard && 1) board[i] = "R";
+    else if(this->whiteBishopBoard && 1) board[i] = "B";
+    else if(this->whiteKnightBoard && 1) board[i] = "N";
+    else if(this->whitePawnBoard && 1) board[i] = "P";
+    else if(this->blackKingBoard && 1) board[i] = "k";
+    else if(this->blackQueenBoard && 1) board[i] = "q";
+    else if(this->blackRookBoard && 1) board[i] = "r";
+    else if(this->blackBishopBoard && 1) board[i] = "b";
+    else if(this->blackKnightBoard && 1) board[i] = "n";
+    else if(this->blackPawnBoard && 1) board[i] = "p";
+    else board[i] = " ";
+    if(i%8==7){
+      std::cout << board[i] << "\n";
+    }
+    else{
+      std::cout << board[i] << " ";
+    }
   }
-
 }
+
+Chessboard board = Chessboard();
