@@ -4,6 +4,7 @@
 Chessboard::Chessboard(){
   this->configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
   this->prettyPrint();
+  this->colorToPlay = false;
 }
 
 void Chessboard::configureBoards(std::string fen){
@@ -144,6 +145,75 @@ void Chessboard::prettyPrint(){
     }
   }
 }
+
+std::list<u_int16_t> Chessboard::getLegalMoves(){
+  u_int64_t enemyPeices = 0;
+  u_int64_t yourPeices = 0;
+
+  if(colorToPlay){
+    int kingMoves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
+    int pawnMoves[4] = {9, 8, 7, 16};
+    enemyPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
+    yourPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
+  }
+  else{
+    int kingMoves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
+    int pawnMoves[4] = {-9, -8, -7, -16};
+    enemyPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
+    yourPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
+  }
+
+  for(u_int64_t i = 0; i<64; i++){
+    if(colorToPlay){
+      if(this->blackKingBoard & u_int64_t(1)<<i){
+
+        for(int j=0; j<9; j++){
+          
+        }
+      }
+      else if(this->blackQueenBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->blackRookBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->blackBishopBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->blackKnightBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->blackPawnBoard & u_int64_t(1)<<i){
+        
+      }
+    }
+    
+    else{
+      if(this->whiteKingBoard & u_int64_t(1)<<i){
+        for(int j=0; j<9; j++){
+
+        }
+      }
+      else if(this->whiteQueenBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->whiteRookBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->whiteBishopBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->whiteKnightBoard & u_int64_t(1)<<i){
+        
+      }
+      else if(this->whitePawnBoard & u_int64_t(1)<<i){
+        
+      }
+    }
+} 
+}
+
+
 int main(){
 Chessboard board = Chessboard();
 std::cout << "done" << "\n";

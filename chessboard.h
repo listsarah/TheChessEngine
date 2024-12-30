@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <list>
 class Chessboard {
     public:
         u_int64_t whiteKingBoard;
@@ -15,8 +16,11 @@ class Chessboard {
         u_int64_t blackKnightBoard;
         u_int64_t blackPawnBoard;
 
+
+
         void configureBoards(std::string fen);
         void prettyPrint();
+        std::list<u_int16_t> getLegalMoves();
         int main();
         Chessboard();
 };
