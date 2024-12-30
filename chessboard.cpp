@@ -190,8 +190,6 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
                         7, 14, 21, 28, 35, 42, 49};
 
   if(colorToPlay){
-    int pawnMoves[4] = {9, 8, 7, 16};
-
     yourKing = this->blackKingBoard;
     yourQueen = this->blackQueenBoard;
     yourRooks = this->blackRookBoard;
@@ -203,8 +201,6 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
     yourPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
   }
   else{
-    int pawnMoves[4] = {-9, -8, -7, -16};
-
     yourKing = this->whiteKingBoard;
     yourQueen = this->whiteQueenBoard;
     yourRooks = this->whiteRookBoard;
@@ -227,14 +223,30 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
           move = ((((move | i) << 10) | movingToIndex) << 4) | captureHuh;
           possibleKingMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
-            std::cout << "Index: " << " " << movingToIndex << "Possible King Move Found: " << move << "\n";
+            std::cout << "King Move Found: " << move << " ";
+            if(captureHuh) std::cout << "Capture";
+            std::cout << "\n";
           #endif
         }
       }
     }
 
     else if(yourQueen & u_int64_t(1)<<i){
-      
+      for(int j=0; j<55; j++){
+        int movingToIndex = i+queenMoves[j];
+        if(movingToIndex >= 0 && movingToIndex < 64 && !(yourPeices & (u_int64_t(1) << movingToIndex))){
+          u_int16_t move = 0;
+          u_int8_t captureHuh = 0;
+          if(enemyPeices & u_int64_t(1)<<movingToIndex) captureHuh = 4;
+          move = ((((move | i) << 10) | movingToIndex) << 4) | captureHuh;
+          possibleQueenMoves.push_back(move);
+          #ifdef DEBUG_PRINT_ENABLED
+            std::cout << "Queen Move Found: " << move << " ";
+            if(captureHuh) std::cout << "Capture";
+            std::cout << "\n";
+          #endif
+        }
+      }
     }
     else if(yourRooks & u_int64_t(1)<<i){
       
@@ -255,7 +267,7 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
 
 int main(){
 Chessboard board = Chessboard();
-board.configureBoards("4k4/8/8/8/8/8/8/4K4");
+board.configureBoards("4k3/3q4/8/8/8/8/3Q4/4K3");
 board.prettyPrint();
 board.getLegalMoves();
 std::cout << "done" << "\n";
