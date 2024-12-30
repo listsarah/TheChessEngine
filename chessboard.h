@@ -47,8 +47,15 @@ class Chessboard {
 
         void configureBoards(std::string fen);
         void prettyPrint();
+        
         std::list<u_int16_t> getLegalMoves();
-        std::list<u_int16_t> getLegalMovesPerPeice(Chessboard board, int currIndex);
+        std::list<u_int16_t> getLegalMovesKing(int currIndex);
+        std::list<u_int16_t> getLegalMovesQueen(int currIndex);
+        std::list<u_int16_t> getLegalMovesRook(int currIndex);
+        std::list<u_int16_t> getLegalMovesBishop(int currIndex);
+        std::list<u_int16_t> getLegalMovesKnight(int currIndex);
+        std::list<u_int16_t> getLegalMovesPawn(int currIndex);
+
         int main();
         Chessboard();
 };
