@@ -154,6 +154,7 @@ void Chessboard::configureBoards(std::string fen){
     this->enemyPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
     this->yourPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
   }
+  this->allPeices = this->enemyPeices | this->yourPeices;
 }
 
 
@@ -225,7 +226,7 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
       possibleKnightMoves = this->getLegalMovesKnight(i);
     }
     else if(yourPawns & u_int64_t(1)<<i){
-      
+      possiblePawnMoves = this->getLegalMovesPawn(i);
     }
 } 
     return possibleKingMoves;
@@ -269,7 +270,7 @@ std::list<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
             if(flag) std::cout << "Capture";
             std::cout << "\n";
           #endif
-          if(flag) break;
+          if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
         }
     }
   }
@@ -364,34 +365,92 @@ std::list<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
             if((this->enemyPeices & u_int64_t(1)<<movingToIndex) == 0) flag.push_back(1);
             break;
           case 1:
-            flag = 0;
-            if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 15;
+            if((this->enemyPeices & u_int64_t(1)<<movingToIndex) == 0){
+              if(getRank(movingToIndex) ==  this->enemyRank){
+                flag.push_back(u_int8_t(0b0110));
+                flag.push_back(u_int8_t(0b0111));
+                flag.push_back(u_int8_t(0b1000));
+                flag.push_back(u_int8_t(0b1001));
+              }
+              else{
+                flag.push_back(0);
+              }
+            }
             break;
           case 2:
-          
+            if(this->enemyPeices & u_int64_t(1)<<movingToIndex){
+              if(getRank(movingToIndex) ==  this->enemyRank){
+                flag.push_back(u_int8_t(0b1010));
+                flag.push_back(u_int8_t(0b1011));
+                flag.push_back(u_int8_t(0b1100));
+                flag.push_back(u_int8_t(0b1101));
+              }
+              else{
+                flag.push_back(4);
+              }
+            }
             break;
           default:
             std::cerr << "Get Legal Pawn Moves is Broken" << "\n";
             break;
           }
 
-          move = ((((move | i) << 10) | movingToIndex) << 4) | flag;
-          possiblePawnMoves.push_back(move);
-
+          for(int k = 0; k<size(flag); k++){
+            move = ((((move | i) << 10) | movingToIndex) << 4) | flag[k];
+            possiblePawnMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
             std::cout << "Pawn Move Found: " << move << " ";
-            if(flag) std::cout << "Capture";
+            switch(flag[k]){
+              case 0:
+                std::cout<<"Quiet Move";
+                break;
+              case 1:
+                std::cout<<"Double Pawn";
+                break;
+              case 4:
+                std::cout<<"Capture";
+                break;
+              case 5:
+                std::cout<<"Capture En Passant";
+                break;
+              case 6:
+                std::cout<<"Knight Promotion";
+                break;
+              case 7:
+                std::cout<<"Bishop Promotion";
+                break;
+              case 8:
+                std::cout<<"Rook Promotion";
+                break;
+              case 9:
+                std::cout<<"Queen Promtion";
+                break;
+              case 10:
+                std::cout<<"Knight Promotion and Capture";
+                break;
+              case 11:
+                std::cout<<"Bishop Promotion and Capture";
+                break;
+              case 12:
+                std::cout<<"Rook Promotion and Capture";
+                break;
+              case 13:
+                std::cout<<"Queen Promotion and Capture";
+                break;
+            }
             std::cout << "\n";
           #endif
+          }
+
         }
     }
   }
-  return possibleKnightMoves;
+  return possiblePawnMoves;
 }
 
 int main(){
 Chessboard board = Chessboard(false);
-board.configureBoards("4k3/3q4/3N4/B7/8/8/3Q4/4K3");
+board.configureBoards("4k3/3q4/3N4/B7/8/8/3Q4/4K1P1");
 board.prettyPrint();
 board.getLegalMoves();
 std::cout << "done" << "\n";
