@@ -188,6 +188,15 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
                         -7, -14, -21, -28, -35, -42, -49,
                         9, 18, 27, 36, 45, 54, 63,
                         7, 14, 21, 28, 35, 42, 49};
+  int rookMoves[28] = {8, 16, 24, 32, 40, 48, 56, 
+                        -8, -16, -24, -32, -40, -48, -56, 
+                        -1, -2, -3, -4, -5, -6, -7, 
+                        1, 2, 3, 4, 5, 6, 7};
+  int bishopMoves[28] = {-9, -18, -27, -36, -45, -54, -63, 
+                        -7, -14, -21, -28, -35, -42, -49,
+                        9, 18, 27, 36, 45, 54, 63,
+                        7, 14, 21, 28, 35, 42, 49};
+  int knightMoves[8] = {15, 17, 6, 10, -15, -17, -6, -10};
 
   if(colorToPlay){
     yourKing = this->blackKingBoard;
@@ -232,7 +241,7 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
     }
 
     else if(yourQueen & u_int64_t(1)<<i){
-      for(int j=0; j<55; j++){
+      for(int j=0; j<56; j++){
         int movingToIndex = i+queenMoves[j];
         if(movingToIndex >= 0 && movingToIndex < 64 && !(yourPeices & (u_int64_t(1) << movingToIndex))){
           u_int16_t move = 0;
@@ -249,13 +258,56 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
       }
     }
     else if(yourRooks & u_int64_t(1)<<i){
-      
+      for(int j=0; j<28; j++){
+        int movingToIndex = i+rookMoves[j];
+        if(movingToIndex >= 0 && movingToIndex < 64 && !(yourPeices & (u_int64_t(1) << movingToIndex))){
+          u_int16_t move = 0;
+          u_int8_t captureHuh = 0;
+          if(enemyPeices & u_int64_t(1)<<movingToIndex) captureHuh = 4;
+          move = ((((move | i) << 10) | movingToIndex) << 4) | captureHuh;
+          possibleRookMoves.push_back(move);
+          #ifdef DEBUG_PRINT_ENABLED
+            std::cout << "Rook Move Found: " << move << " ";
+            if(captureHuh) std::cout << "Capture";
+            std::cout << "\n";
+          #endif
+        }
+      }
     }
     else if(yourBishops & u_int64_t(1)<<i){
+      for(int j=0; j<28; j++){
+        int movingToIndex = i+bishopMoves[j];
+        if(movingToIndex >= 0 && movingToIndex < 64 && !(yourPeices & (u_int64_t(1) << movingToIndex))){
+          u_int16_t move = 0;
+          u_int8_t captureHuh = 0;
+          if(enemyPeices & u_int64_t(1)<<movingToIndex) captureHuh = 4;
+          move = ((((move | i) << 10) | movingToIndex) << 4) | captureHuh;
+          possibleBishopMoves.push_back(move);
+          #ifdef DEBUG_PRINT_ENABLED
+            std::cout << "Bishop Move Found: " << move << " ";
+            if(captureHuh) std::cout << "Capture";
+            std::cout << "\n";
+          #endif
+        }
+      }
       
     }
     else if(yourKnights & u_int64_t(1)<<i){
-      
+      for(int j=0; j<8; j++){
+        int movingToIndex = i+knightMoves[j];
+        if(movingToIndex >= 0 && movingToIndex < 64 && !(yourPeices & (u_int64_t(1) << movingToIndex))){
+          u_int16_t move = 0;
+          u_int8_t captureHuh = 0;
+          if(enemyPeices & u_int64_t(1)<<movingToIndex) captureHuh = 4;
+          move = ((((move | i) << 10) | movingToIndex) << 4) | captureHuh;
+          possibleKnightMoves.push_back(move);
+          #ifdef DEBUG_PRINT_ENABLED
+            std::cout << "Knight Move Found: " << move << " ";
+            if(captureHuh) std::cout << "Capture";
+            std::cout << "\n";
+          #endif
+        }
+      }
     }
     else if(yourPawns & u_int64_t(1)<<i){
       
@@ -267,7 +319,7 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
 
 int main(){
 Chessboard board = Chessboard();
-board.configureBoards("4k3/3q4/8/8/8/8/3Q4/4K3");
+board.configureBoards("4k3/3q4/3N4/B7/8/8/3Q4/4K3");
 board.prettyPrint();
 board.getLegalMoves();
 std::cout << "done" << "\n";
