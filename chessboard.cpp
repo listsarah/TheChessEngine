@@ -270,8 +270,8 @@ std::list<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
             if(flag) std::cout << "Capture";
             std::cout << "\n";
           #endif
-          if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
         }
+        if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
     }
   }
   return possibleQueenMoves;
@@ -293,8 +293,8 @@ std::list<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
             if(flag) std::cout << "Capture";
             std::cout << "\n";
           #endif
-          if(flag) break;
         }
+        if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
     }
   }
   return possibleRookMoves;
@@ -316,8 +316,8 @@ std::list<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
             if(flag) std::cout << "Capture";
             std::cout << "\n";
           #endif
-          if(flag) break;
         }
+        if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
     }
   }
   return possibleBishopMoves;
