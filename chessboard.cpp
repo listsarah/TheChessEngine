@@ -2,10 +2,18 @@
 #include "chessboard.h"
 
 
-Chessboard::Chessboard(){
-  this->colorToPlay = false;
+Chessboard::Chessboard(bool blackPeicesHuh){
+  this->colorToPlay = blackPeicesHuh;
   this->configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
   this->prettyPrint();
+  if(blackPeicesHuh){
+    this->pawnMoves = this->pawnMovesBlack;
+    this->enemyRank = 7;
+  }
+  else{
+    this->enemyRank = 0;
+    this->pawnMoves = this->pawnMovesWhite;
+  } 
 }
 
 void Chessboard::configureBoards(std::string fen){
@@ -23,6 +31,9 @@ void Chessboard::configureBoards(std::string fen){
   this->blackBishopBoard = 0;
   this->blackKnightBoard = 0;
   this->blackPawnBoard = 0;
+
+  if(fen == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") this->pawnsElegibleForDoubleMove = 0b11111111;
+
   for(int i = 0; i<fen.length(); i++){
     currChar = fen.at(i);
     if(currChar == "K"){
@@ -122,26 +133,26 @@ void Chessboard::configureBoards(std::string fen){
     }
   }
   if(this->colorToPlay){
-    yourKing = this->blackKingBoard;
-    yourQueen = this->blackQueenBoard;
-    yourRooks = this->blackRookBoard;
-    yourBishops = this->blackBishopBoard;
-    yourKnights = this->blackKnightBoard;
-    yourPawns = this->blackPawnBoard;
+    this->yourKing = this->blackKingBoard;
+    this->yourQueen = this->blackQueenBoard;
+    this->yourRooks = this->blackRookBoard;
+    this->yourBishops = this->blackBishopBoard;
+    this->yourKnights = this->blackKnightBoard;
+    this->yourPawns = this->blackPawnBoard;
 
-    enemyPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
-    yourPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
+    this->enemyPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
+    this->yourPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
   }
   else{
-    yourKing = this->whiteKingBoard;
-    yourQueen = this->whiteQueenBoard;
-    yourRooks = this->whiteRookBoard;
-    yourBishops = this->whiteBishopBoard;
-    yourKnights = this->whiteKnightBoard;
-    yourPawns = this->whitePawnBoard;
+    this->yourKing = this->whiteKingBoard;
+    this->yourQueen = this->whiteQueenBoard;
+    this->yourRooks = this->whiteRookBoard;
+    this->yourBishops = this->whiteBishopBoard;
+    this->yourKnights = this->whiteKnightBoard;
+    this->yourPawns = this->whitePawnBoard;
 
-    enemyPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
-    yourPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
+    this->enemyPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
+    this->yourPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
   }
 }
 
@@ -333,8 +344,53 @@ std::list<u_int16_t> Chessboard::getLegalMovesKnight(int currIndex){
   return possibleKnightMoves;
 }
 
+int getRank(int index){
+  return int(index/8);
+}
+
+std::list<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
+  std::list<u_int16_t> possiblePawnMoves = {};
+  int startingIndex = 0;
+  if((this->yourPawns & u_int64_t(1)<<currIndex) & (this->pawnsElegibleForDoubleMove & (u_int8_t(1)<<(currIndex%8)))) startingIndex = 1;
+  for(int i = startingIndex; i<size(this->pawnMoves); i++){
+    for(int j = 0; j<size(this->pawnMoves[i]); j++){
+      int movingToIndex = currIndex+this->pawnMoves[i][j];
+        if(movingToIndex >= 0 && movingToIndex < 64 && !(this->yourPeices & (u_int64_t(1) << movingToIndex))){
+          u_int16_t move = 0;
+          std::vector<u_int8_t> flag = {};
+          switch(i)
+          {
+          case 0:
+            if((this->enemyPeices & u_int64_t(1)<<movingToIndex) == 0) flag.push_back(1);
+            break;
+          case 1:
+            flag = 0;
+            if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 15;
+            break;
+          case 2:
+          
+            break;
+          default:
+            std::cerr << "Get Legal Pawn Moves is Broken" << "\n";
+            break;
+          }
+
+          move = ((((move | i) << 10) | movingToIndex) << 4) | flag;
+          possiblePawnMoves.push_back(move);
+
+          #ifdef DEBUG_PRINT_ENABLED
+            std::cout << "Pawn Move Found: " << move << " ";
+            if(flag) std::cout << "Capture";
+            std::cout << "\n";
+          #endif
+        }
+    }
+  }
+  return possibleKnightMoves;
+}
+
 int main(){
-Chessboard board = Chessboard();
+Chessboard board = Chessboard(false);
 board.configureBoards("4k3/3q4/3N4/B7/8/8/3Q4/4K3");
 board.prettyPrint();
 board.getLegalMoves();
