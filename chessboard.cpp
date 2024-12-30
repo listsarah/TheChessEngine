@@ -150,72 +150,114 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
   u_int64_t enemyPeices = 0;
   u_int64_t yourPeices = 0;
 
+  u_int64_t yourKing = 0;
+  u_int64_t yourQueen = 0;
+  u_int64_t yourRooks = 0;
+  u_int64_t yourBishops = 0;
+  u_int64_t yourKnights = 0;
+  u_int64_t yourPawns = 0;
+
+  // bits 10-15 from, bits 4-9 to, bits 0-3 flags as follows
+  // 0000: quiet move
+  // 0001: double pawn at beginning
+  // 0010: king castle
+  // 0011: queen castle
+  // 0100: captures 
+  // 0101: captures en passant (weird pawn capture thingy)
+  // 0110: knight-promotion
+  // 0111: bishop-promotion
+  // 1000:rook-promotion
+  // 1001: queen-promotion
+  // 1010: knight-promotion and capture
+  // 1011: bishop promotion and capture
+  // 1100: rook protiomtion and capture
+  // 1101: queen promotion and caputure
+  std::list<u_int16_t> possibleKingMoves = {};
+  std::list<u_int16_t> possibleQueenMoves = {};
+  std::list<u_int16_t> possibleRookMoves = {};
+  std::list<u_int16_t> possibleBishopMoves = {};
+  std::list<u_int16_t> possibleKnightMoves = {};
+  std::list<u_int16_t> possiblePawnMoves = {};
+
+  int kingMoves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
+  int queenMoves[56] = {8, 16, 24, 32, 40, 48, 56, 
+                        -8, -16, -24, -32, -40, -48, -56, 
+                        -1, -2, -3, -4, -5, -6, -7, 
+                        1, 2, 3, 4, 5, 6, 7
+                        -9, -18, -27, -36, -45, -54, -63, 
+                        -7, -14, -21, -28, -35, -42, -49,
+                        9, 18, 27, 36, 45, 54, 63,
+                        7, 14, 21, 28, 35, 42, 49};
+
   if(colorToPlay){
-    int kingMoves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
     int pawnMoves[4] = {9, 8, 7, 16};
+
+    yourKing = this->blackKingBoard;
+    yourQueen = this->blackQueenBoard;
+    yourRooks = this->blackRookBoard;
+    yourBishops = this->blackBishopBoard;
+    yourKnights = this->blackKnightBoard;
+    yourPawns = this->blackPawnBoard;
+
     enemyPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
     yourPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
   }
   else{
-    int kingMoves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
     int pawnMoves[4] = {-9, -8, -7, -16};
+
+    yourKing = this->whiteKingBoard;
+    yourQueen = this->whiteQueenBoard;
+    yourRooks = this->whiteRookBoard;
+    yourBishops = this->whiteBishopBoard;
+    yourKnights = this->whiteKnightBoard;
+    yourPawns = this->whitePawnBoard;
+
     enemyPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
     yourPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
   }
 
   for(u_int64_t i = 0; i<64; i++){
-    if(colorToPlay){
-      if(this->blackKingBoard & u_int64_t(1)<<i){
-
-        for(int j=0; j<9; j++){
-          
+    if(yourKing & u_int64_t(1)<<i){
+      for(int j=0; j<8; j++){
+        int movingToIndex = i+kingMoves[j];
+        if(movingToIndex >= 0 && movingToIndex < 64 && !(yourPeices & (u_int64_t(1) << movingToIndex))){
+          u_int16_t move = 0;
+          u_int8_t captureHuh = 0;
+          if(enemyPeices & u_int64_t(1)<<movingToIndex) captureHuh = 4;
+          move = ((((move | i) << 10) | movingToIndex) << 4) | captureHuh;
+          possibleKingMoves.push_back(move);
+          #ifdef DEBUG_PRINT_ENABLED
+            std::cout << "Index: " << " " << movingToIndex << "Possible King Move Found: " << move << "\n";
+          #endif
         }
-      }
-      else if(this->blackQueenBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->blackRookBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->blackBishopBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->blackKnightBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->blackPawnBoard & u_int64_t(1)<<i){
-        
       }
     }
-    
-    else{
-      if(this->whiteKingBoard & u_int64_t(1)<<i){
-        for(int j=0; j<9; j++){
 
-        }
-      }
-      else if(this->whiteQueenBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->whiteRookBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->whiteBishopBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->whiteKnightBoard & u_int64_t(1)<<i){
-        
-      }
-      else if(this->whitePawnBoard & u_int64_t(1)<<i){
-        
-      }
+    else if(yourQueen & u_int64_t(1)<<i){
+      
+    }
+    else if(yourRooks & u_int64_t(1)<<i){
+      
+    }
+    else if(yourBishops & u_int64_t(1)<<i){
+      
+    }
+    else if(yourKnights & u_int64_t(1)<<i){
+      
+    }
+    else if(yourPawns & u_int64_t(1)<<i){
+      
     }
 } 
+    return possibleKingMoves;
 }
 
 
 int main(){
 Chessboard board = Chessboard();
+board.configureBoards("4k4/8/8/8/8/8/8/4K4");
+board.prettyPrint();
+board.getLegalMoves();
 std::cout << "done" << "\n";
 
 }

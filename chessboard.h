@@ -16,7 +16,7 @@ class Chessboard {
         u_int64_t blackKnightBoard;
         u_int64_t blackPawnBoard;
 
-
+        bool colorToPlay;
 
         void configureBoards(std::string fen);
         void prettyPrint();
