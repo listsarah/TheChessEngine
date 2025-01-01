@@ -28,6 +28,8 @@ class Chessboard {
         u_int64_t yourKnights;
         u_int64_t yourPawns;
 
+        u_int8_t yourKingIndex;
+
         bool colorToPlay;
 
         u_int8_t pawnsElegibleForDoubleMove;
@@ -56,13 +58,16 @@ class Chessboard {
         void configureBoards(std::string fen);
         void prettyPrint();
         
-        std::list<u_int16_t> getLegalMoves();
-        std::list<u_int16_t> getLegalMovesKing(int currIndex);
-        std::list<u_int16_t> getLegalMovesQueen(int currIndex);
-        std::list<u_int16_t> getLegalMovesRook(int currIndex);
-        std::list<u_int16_t> getLegalMovesBishop(int currIndex);
-        std::list<u_int16_t> getLegalMovesKnight(int currIndex);
-        std::list<u_int16_t> getLegalMovesPawn(int currIndex);
+        std::vector<std::vector<u_int16_t>> getLegalMoves();
+        std::vector<u_int16_t> getLegalMovesKing(int currIndex);
+        std::vector<u_int16_t> getLegalMovesQueen(int currIndex);
+        std::vector<u_int16_t> getLegalMovesRook(int currIndex);
+        std::vector<u_int16_t> getLegalMovesBishop(int currIndex);
+        std::vector<u_int16_t> getLegalMovesKnight(int currIndex);
+        std::vector<u_int16_t> getLegalMovesPawn(int currIndex);
+
+        std::vector<std::vector<u_int16_t>> removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList);
+        std::vector<Chessboard> movesToBoards(Chessboard oldBoard, std::vector<std::vector<u_int16_t>> moves);
 
         int main();
         Chessboard(bool blackPeicesHuh);

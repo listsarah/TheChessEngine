@@ -19,6 +19,8 @@ Chessboard::Chessboard(bool blackPeicesHuh){
 void Chessboard::configureBoards(std::string fen){
   std::string currChar = "";
   u_int8_t currBoardIndex = 0;
+  u_int8_t whiteKingIndex = 100;
+  u_int8_t blackKingIndex = 100;
   this->whiteKingBoard = 0;
   this->whiteQueenBoard = 0;
   this->whiteRookBoard = 0;
@@ -38,6 +40,7 @@ void Chessboard::configureBoards(std::string fen){
     currChar = fen.at(i);
     if(currChar == "K"){
       this->whiteKingBoard |= u_int64_t(1) << currBoardIndex;
+      whiteKingIndex = currBoardIndex;
       currBoardIndex++;
       #ifdef DEBUG_PRINT_ENABLED
         std::cout << "White King" << "\n";
@@ -80,6 +83,7 @@ void Chessboard::configureBoards(std::string fen){
     }
     else if(currChar == "k"){
       this->blackKingBoard |= u_int64_t(1) << currBoardIndex;
+      blackKingIndex = currBoardIndex;
       currBoardIndex++;
       #ifdef DEBUG_PRINT_ENABLED
         std::cout << "Black King" << "\n";
@@ -139,6 +143,7 @@ void Chessboard::configureBoards(std::string fen){
     this->yourBishops = this->blackBishopBoard;
     this->yourKnights = this->blackKnightBoard;
     this->yourPawns = this->blackPawnBoard;
+    this->yourKingIndex = blackKingIndex;
 
     this->enemyPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
     this->yourPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
@@ -150,6 +155,7 @@ void Chessboard::configureBoards(std::string fen){
     this->yourBishops = this->whiteBishopBoard;
     this->yourKnights = this->whiteKnightBoard;
     this->yourPawns = this->whitePawnBoard;
+    this->yourKingIndex = whiteKingIndex;
 
     this->enemyPeices = this->blackKingBoard | this->blackQueenBoard | this->blackRookBoard | this->blackBishopBoard | this->blackKnightBoard | this->blackPawnBoard;
     this->yourPeices = this->whiteKingBoard | this->whiteQueenBoard | this->whiteRookBoard | this->whiteBishopBoard | this->whiteKnightBoard | this->whitePawnBoard;
@@ -183,7 +189,8 @@ void Chessboard::prettyPrint(){
   }
 }
 
-std::list<u_int16_t> Chessboard::getLegalMoves(){
+std::vector<std::vector<u_int16_t>> Chessboard::getLegalMoves(){
+
 
   // bits 10-15 from, bits 4-9 to, bits 0-3 flags as follows
   // 0000: quiet move
@@ -200,12 +207,12 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
   // 1011: bishop promotion and capture
   // 1100: rook protiomtion and capture
   // 1101: queen promotion and caputure
-  std::list<u_int16_t> possibleKingMoves = {};
-  std::list<u_int16_t> possibleQueenMoves = {};
-  std::list<u_int16_t> possibleRookMoves = {};
-  std::list<u_int16_t> possibleBishopMoves = {};
-  std::list<u_int16_t> possibleKnightMoves = {};
-  std::list<u_int16_t> possiblePawnMoves = {};
+  std::vector<u_int16_t> possibleKingMoves = {};
+  std::vector<u_int16_t> possibleQueenMoves = {};
+  std::vector<u_int16_t> possibleRookMoves = {};
+  std::vector<u_int16_t> possibleBishopMoves = {};
+  std::vector<u_int16_t> possibleKnightMoves = {};
+  std::vector<u_int16_t> possiblePawnMoves = {};
 
 
   for(u_int64_t i = 0; i<64; i++){
@@ -229,11 +236,12 @@ std::list<u_int16_t> Chessboard::getLegalMoves(){
       possiblePawnMoves = this->getLegalMovesPawn(i);
     }
 } 
-    return possibleKingMoves;
+    std::vector<std::vector<u_int16_t>> retval = {possibleKingMoves, possibleQueenMoves, possibleRookMoves, possibleBishopMoves, possibleKnightMoves, possiblePawnMoves};
+    return retval;
 }
 
-std::list<u_int16_t> Chessboard::getLegalMovesKing(int currIndex){
-  std::list<u_int16_t> possibleKingMoves = {};
+std::vector<u_int16_t> Chessboard::getLegalMovesKing(int currIndex){
+  std::vector<u_int16_t> possibleKingMoves = {};
   for(int i = 0; i<size(this->kingMoves); i++){
     for(int j = 0; j<size(this->kingMoves[i]); j++){
       int movingToIndex = currIndex+this->kingMoves[i][j];
@@ -254,8 +262,8 @@ std::list<u_int16_t> Chessboard::getLegalMovesKing(int currIndex){
   return possibleKingMoves;
 }
 
-std::list<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
-  std::list<u_int16_t> possibleQueenMoves = {};
+std::vector<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
+  std::vector<u_int16_t> possibleQueenMoves = {};
   for(int i = 0; i<size(this->queenMoves); i++){
     for(int j = 0; j<size(this->queenMoves[i]); j++){
       int movingToIndex = currIndex+this->queenMoves[i][j];
@@ -277,8 +285,8 @@ std::list<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
   return possibleQueenMoves;
 }
 
-std::list<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
-  std::list<u_int16_t> possibleRookMoves = {};
+std::vector<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
+  std::vector<u_int16_t> possibleRookMoves = {};
   for(int i = 0; i<size(this->rookMoves); i++){
     for(int j = 0; j<size(this->rookMoves[i]); j++){
       int movingToIndex = currIndex+this->rookMoves[i][j];
@@ -300,8 +308,8 @@ std::list<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
   return possibleRookMoves;
 }
 
-std::list<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
-  std::list<u_int16_t> possibleBishopMoves = {};
+std::vector<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
+  std::vector<u_int16_t> possibleBishopMoves = {};
   for(int i = 0; i<size(this->bishopMoves); i++){
     for(int j = 0; j<size(this->bishopMoves[i]); j++){
       int movingToIndex = currIndex+this->bishopMoves[i][j];
@@ -323,8 +331,8 @@ std::list<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
   return possibleBishopMoves;
 }
 
-std::list<u_int16_t> Chessboard::getLegalMovesKnight(int currIndex){
-  std::list<u_int16_t> possibleKnightMoves = {};
+std::vector<u_int16_t> Chessboard::getLegalMovesKnight(int currIndex){
+  std::vector<u_int16_t> possibleKnightMoves = {};
   for(int i = 0; i<size(this->knightMoves); i++){
     for(int j = 0; j<size(this->knightMoves[i]); j++){
       int movingToIndex = currIndex+this->knightMoves[i][j];
@@ -349,8 +357,8 @@ int getRank(int index){
   return int(index/8);
 }
 
-std::list<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
-  std::list<u_int16_t> possiblePawnMoves = {};
+std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
+  std::vector<u_int16_t> possiblePawnMoves = {};
   int startingIndex = 0;
   if((this->yourPawns & u_int64_t(1)<<currIndex) & (this->pawnsElegibleForDoubleMove & (u_int8_t(1)<<(currIndex%8)))) startingIndex = 1;
   for(int i = startingIndex; i<size(this->pawnMoves); i++){
@@ -446,6 +454,41 @@ std::list<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
     }
   }
   return possiblePawnMoves;
+}
+
+std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList){
+  for(int i=0; i<size(fullMoveList); i++){
+
+  }
+}
+//possibleKingMoves, possibleQueenMoves, possibleRookMoves, possibleBishopMoves, possibleKnightMoves, possiblePawnMoves
+std::vector<Chessboard> Chessboard::movesToBoards(Chessboard oldBoard, std::vector<std::vector<u_int16_t>> moves){
+  std::vector<Chessboard> retList = {};
+  for(int i = 0; i<size(moves); i++){
+    for(int j=0; j<size(moves[i]); j++){
+      Chessboard currentBoard = oldBoard;
+      u_int16_t flag = moves[i][j] & u_int16_t(15);
+      u_int16_t fromIndex = (moves[i][j] & 0b1111110000000000) >> 10;
+      u_int16_t toIndex = (moves[i][j] & 0b0000001111110000) >> 4;
+      switch (i)
+      {
+      case 0:
+        if(flag == 4){
+          currentBoard.yourKing &= ~(u_int64_t(1) << fromIndex);
+          currentBoard.yourKing |= u_int64_t(1) << toIndex;
+
+          currentBoard.
+        }
+        else{
+
+        }
+        break;
+      
+      default:
+        break;
+      }
+    }
+  }
 }
 
 int main(){
