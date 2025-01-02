@@ -287,7 +287,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesKing(int currIndex){
           u_int16_t move = 0;
           u_int8_t flag = 0;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
-          move = ((((move | i) << 10) | movingToIndex) << 4) | flag;
+          move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleKingMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
             std::cout << "King Move Found: " << move << " ";
@@ -309,7 +309,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
           u_int16_t move = 0;
           u_int8_t flag = 0;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
-          move = ((((move | i) << 10) | movingToIndex) << 4) | flag;
+          move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleQueenMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
             std::cout << "Queen Move Found: " << move << " ";
@@ -332,7 +332,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
           u_int16_t move = 0;
           u_int8_t flag = 0;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
-          move = ((((move | i) << 10) | movingToIndex) << 4) | flag;
+          move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleRookMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
             std::cout << "Rook Move Found: " << move << " ";
@@ -355,7 +355,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
           u_int16_t move = 0;
           u_int8_t flag = 0;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
-          move = ((((move | i) << 10) | movingToIndex) << 4) | flag;
+          move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleBishopMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
             std::cout << "Bishop Move Found: " << move << " ";
@@ -378,7 +378,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesKnight(int currIndex){
           u_int16_t move = 0;
           u_int8_t flag = 0;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
-          move = ((((move | i) << 10) | movingToIndex) << 4) | flag;
+          move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleKnightMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
             std::cout << "Knight Move Found: " << move << " ";
@@ -442,7 +442,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
           }
 
           for(int k = 0; k<size(flag); k++){
-            move = ((((move | i) << 10) | movingToIndex) << 4) | flag[k];
+            move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag[k]);
             possiblePawnMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
             std::cout << "Pawn Move Found: " << move << " ";
@@ -500,11 +500,11 @@ std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std
   }
 }
 //possibleKingMoves, possibleQueenMoves, possibleRookMoves, possibleBishopMoves, possibleKnightMoves, possiblePawnMoves
-std::vector<Chessboard> Chessboard::movesToBoards(Chessboard oldBoard, std::vector<std::vector<u_int16_t>> moves){
+std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int16_t>> moves){
   std::vector<Chessboard> retList = {};
   for(int i = 0; i<size(moves); i++){
     for(int j=0; j<size(moves[i]); j++){
-      Chessboard currentBoard = oldBoard;
+      Chessboard currentBoard = Chessboard(*this);
       u_int16_t flag = moves[i][j] & u_int16_t(15);
       u_int16_t fromIndex = (moves[i][j] & 0b1111110000000000) >> 10;
       u_int16_t toIndex = (moves[i][j] & 0b0000001111110000) >> 4;
@@ -515,25 +515,36 @@ std::vector<Chessboard> Chessboard::movesToBoards(Chessboard oldBoard, std::vect
           currentBoard.yourKing &= ~(u_int64_t(1) << fromIndex);
           currentBoard.yourKing |= u_int64_t(1) << toIndex;
 
-          // currentBoard.
+          currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+          currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+          currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+          currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+          currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+          currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
         }
         else{
-
+          currentBoard.yourKing &= ~(u_int64_t(1) << fromIndex);
+          currentBoard.yourKing |= u_int64_t(1) << toIndex;
+          std::cout<<"from index " << fromIndex << " to index: " << toIndex << "\n";
         }
         break;
-      
-      default:
-        break;
       }
+      currentBoard.enemyPeices = currentBoard.enemyKing | currentBoard.enemyQueen | currentBoard.enemyRooks | currentBoard.enemyBishops | currentBoard.enemyKnights | currentBoard.enemyPawns;
+      currentBoard.yourPeices = currentBoard.yourKing | currentBoard.yourQueen | currentBoard.yourRooks | currentBoard.yourBishops | currentBoard.yourKnights | currentBoard.yourPawns;
+      currentBoard.allPeices = currentBoard.enemyPeices | currentBoard.yourPeices;
+      retList.push_back(currentBoard);
     }
   }
+  return retList;
 }
 
 int main(){
 Chessboard board = Chessboard(false);
-board.configureBoards("4k3/3q4/3N4/B7/8/8/3Q4/4K1P1");
+board.configureBoards("4k3/3q4/3N4/B7/8/8/3Qp3/4K1P1");
 board.prettyPrint();
-board.getLegalMoves();
+std::vector<std::vector<u_int16_t>> moves = board.getLegalMoves();
+std::vector<Chessboard> manyBoards = board.movesToBoards(moves);
+manyBoards[0].prettyPrint();
 std::cout << "done" << "\n";
 
 }

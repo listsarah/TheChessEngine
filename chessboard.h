@@ -63,8 +63,53 @@ class Chessboard {
         std::vector<u_int16_t> getLegalMovesPawn(int currIndex);
 
         std::vector<std::vector<u_int16_t>> removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList);
-        std::vector<Chessboard> movesToBoards(Chessboard oldBoard, std::vector<std::vector<u_int16_t>> moves);
+        std::vector<Chessboard> movesToBoards(std::vector<std::vector<u_int16_t>> moves);
 
         int main();
         Chessboard(bool blackPeicesHuh);
+
+        Chessboard(const Chessboard& other) {
+            this->colorToPlay = other.colorToPlay;
+            this->enemyRank = other.enemyRank;
+            this->pawnsElegibleForDoubleMove = other.pawnsElegibleForDoubleMove;
+            this->pawnMoves = other.pawnMoves;
+            this->yourKingIndex = other.yourKingIndex;
+            this->enemyKingIndex = other.enemyKingIndex;
+
+            this->yourKing = other.yourKing;
+            this->yourQueen = other.yourQueen;
+            this->yourRooks = other.yourRooks;
+            this->yourBishops = other.yourBishops;
+            this->yourKnights = other.yourKnights;
+            this->yourPawns = other.yourPawns;
+            this->enemyKing = other.enemyKing;
+            this->enemyQueen = other.enemyQueen;
+            this->enemyRooks = other.enemyRooks;
+            this->enemyBishops = other.enemyBishops;
+            this->enemyKnights = other.enemyKnights;
+            this->enemyPawns = other.enemyPawns;
+
+            this->allPeices = other.allPeices;
+            this->yourPeices = other.yourPeices;
+            this->enemyPeices = other.enemyPeices;
+
+            this->straightLeftMoves = other.straightLeftMoves;
+            this->straightRightMoves = other.straightRightMoves;
+            this->straightUpMoves = other.straightUpMoves;
+            this->straighDownMoves = other.straighDownMoves;
+            this->diagonalLeftDownMoves = other.diagonalLeftDownMoves;
+            this->diagonalLeftUpMoves = other.diagonalLeftUpMoves;
+            this->diagonalRightDownMoves = other.diagonalRightDownMoves;
+            this->diagonalRightUpMoves = other.diagonalRightUpMoves;
+
+            this->pawnMovesBlack = other.pawnMovesBlack;
+            this->pawnMovesWhite = other.pawnMovesWhite;
+
+            this->kingMoves = other.kingMoves;
+            this->queenMoves = other.queenMoves;
+            this->rookMoves = other.rookMoves;
+            this->bishopMoves = other.bishopMoves;
+            this->knightMoves = other.knightMoves;
+        }
+
 };
