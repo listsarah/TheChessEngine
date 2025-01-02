@@ -34,7 +34,10 @@ void Chessboard::configureBoards(std::string fen){
   u_int64_t blackKnightBoard = 0;
   u_int64_t blackPawnBoard = 0;
 
-  if(fen == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR") this->pawnsElegibleForDoubleMove = 0b11111111;
+  if(fen == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"){
+    this->yourPawnsEligableForDoubleMove = 0b11111111;
+    this->enemyPawnsEligableForDoubleMove = 0b11111111;
+  }
 
   for(int i = 0; i<fen.length(); i++){
     currChar = fen.at(i);
@@ -500,11 +503,6 @@ std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
   return possiblePawnMoves;
 }
 
-std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList){
-  for(int i=0; i<size(fullMoveList); i++){
-
-  }
-}
 //possibleKingMoves, possibleQueenMoves, possibleRookMoves, possibleBishopMoves, possibleKnightMoves, possiblePawnMoves
 std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int16_t>> moves){
   std::vector<Chessboard> retList = {};
@@ -683,6 +681,46 @@ std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int1
     }
   }
   return retList;
+}
+
+void Chessboard::switchColor(){
+            Chessboard intermediate = Chessboard(*this);
+            this->colorToPlay = !this->colorToPlay;
+            if(this->colorToPlay){
+                this->pawnMoves = this->pawnMovesBlack;
+                this->enemyRank = 7;
+            }
+            else{
+                this->pawnMoves = this->pawnMovesWhite;
+                this->enemyRank = 0;
+            }
+            this->yourPawnsEligableForDoubleMove = this->enemyPawnsEligableForDoubleMove;
+            this->enemyPawnsEligableForDoubleMove = intermediate.yourPawnsEligableForDoubleMove;
+            this->yourKingIndex = this->enemyKingIndex;
+            this->enemyKingIndex = intermediate.yourKingIndex;
+
+            this->yourKing = this->enemyKing;
+            this->yourQueen = this->enemyQueen;
+            this->yourRooks = this->enemyRooks;
+            this->yourBishops = this->enemyBishops;
+            this->yourKnights = this->enemyKnights;
+            this->yourPawns = this->enemyPawns;
+            this->enemyKing = intermediate.yourKing;
+            this->enemyQueen = intermediate.yourQueen;
+            this->enemyRooks = intermediate.yourRooks;
+            this->enemyBishops = intermediate.yourBishops;
+            this->enemyKnights = intermediate.yourKnights;
+            this->enemyPawns = intermediate.yourPawns;
+
+            this->yourPeices = this->enemyPeices;
+            this->enemyPeices = intermediate.yourPeices;
+        }
+
+std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList){
+  std::vector<Chessboard> possibleBoards = this->movesToBoards(fullMoveList);
+  for(int i=0; i<size(fullMoveList); i++){
+
+  }
 }
 
 int main(){

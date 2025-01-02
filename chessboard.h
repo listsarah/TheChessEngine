@@ -28,7 +28,8 @@ class Chessboard {
 
         bool colorToPlay;
 
-        u_int8_t pawnsElegibleForDoubleMove;
+        u_int8_t yourPawnsEligableForDoubleMove;
+        u_int8_t enemyPawnsEligableForDoubleMove;
         int enemyRank;
 
         std::vector<int> straightLeftMoves = {-1, -2, -3, -4, -5, -6, -7};
@@ -41,7 +42,7 @@ class Chessboard {
         std::vector<int> diagonalRightUpMoves = {9, 18, 27, 36, 45, 54, 63};
 
         std::vector<std::vector<int>> pawnMovesWhite = {{-16}, {-8}, {-7, -9}};
-        std::vector<std::vector<int>> pawnMovesBlack = {{-16}, {-8}, {-7, -9}};
+        std::vector<std::vector<int>> pawnMovesBlack = {{16}, {8}, {7, 9}};
 
         std::vector<std::vector<int>> kingMoves = {{-9, -8, -7, -1, 1, 7, 8, 9}};
         std::vector<std::vector<int>> queenMoves = {straightLeftMoves, straightRightMoves, straightUpMoves, straighDownMoves, diagonalLeftDownMoves, diagonalRightDownMoves, diagonalLeftUpMoves, diagonalRightUpMoves};
@@ -68,10 +69,44 @@ class Chessboard {
         int main();
         Chessboard(bool blackPeicesHuh);
 
+        void switchColor(){
+            Chessboard intermediate = Chessboard(*this);
+            this->colorToPlay = !this->colorToPlay;
+            if(this->colorToPlay){
+                this->pawnMoves = this->pawnMovesBlack;
+                this->enemyRank = 7;
+            }
+            else{
+                this->pawnMoves = this->pawnMovesWhite;
+                this->enemyRank = 0;
+            }
+            this->yourPawnsEligableForDoubleMove = this->enemyPawnsEligableForDoubleMove;
+            this->enemyPawnsEligableForDoubleMove = intermediate.yourPawnsEligableForDoubleMove;
+            this->yourKingIndex = this->enemyKingIndex;
+            this->enemyKingIndex = intermediate.yourKingIndex;
+
+            this->yourKing = this->enemyKing;
+            this->yourQueen = this->enemyQueen;
+            this->yourRooks = this->enemyRooks;
+            this->yourBishops = this->enemyBishops;
+            this->yourKnights = this->enemyKnights;
+            this->yourPawns = this->enemyPawns;
+            this->enemyKing = intermediate.yourKing;
+            this->enemyQueen = intermediate.yourQueen;
+            this->enemyRooks = intermediate.yourRooks;
+            this->enemyBishops = intermediate.yourBishops;
+            this->enemyKnights = intermediate.yourKnights;
+            this->enemyPawns = intermediate.yourPawns;
+
+            this->yourPeices = this->enemyPeices;
+            this->enemyPeices = intermediate.yourPeices;
+        }
+
         Chessboard(const Chessboard& other) {
             this->colorToPlay = other.colorToPlay;
             this->enemyRank = other.enemyRank;
-            this->pawnsElegibleForDoubleMove = other.pawnsElegibleForDoubleMove;
+            this->yourPawnsEligableForDoubleMove = other.yourPawnsEligableForDoubleMove;
+            this->enemyPawnsEligableForDoubleMove = other.enemyPawnsEligableForDoubleMove;
             this->pawnMoves = other.pawnMoves;
             this->yourKingIndex = other.yourKingIndex;
             this->enemyKingIndex = other.enemyKingIndex;
