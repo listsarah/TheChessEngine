@@ -742,12 +742,18 @@ std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std
       }
     }
   }
+      if(size(nonCheckMoves[0]) == 0 && size(nonCheckMoves[1]) == 0 && size(nonCheckMoves[2]) == 0 && size(nonCheckMoves[3]) == 0 && size(nonCheckMoves[4]) == 0 && size(nonCheckMoves[5]) == 0){
+      this->gameOver = true;
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout << "Game Over" << "\n";
+      #endif
+    }
   return nonCheckMoves;
 }
 
 int main(){
 Chessboard board = Chessboard(false);
-board.configureBoards("3rK4/4P3/8/8/8/8/4n3/3P4");
+board.configureBoards("r3K4/r3P3/8/8/8/8/4n3/3P4");
 board.prettyPrint();
 std::vector<std::vector<u_int16_t>> moves = board.getLegalMoves();
 std::vector<std::vector<u_int16_t>> goodMoves = board.removeCheckMoves(moves);

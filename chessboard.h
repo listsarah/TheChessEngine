@@ -5,6 +5,8 @@
 class Chessboard {
     public:
 
+        bool gameOver = false;
+
         u_int64_t enemyPeices;
         u_int64_t yourPeices;
         u_int64_t allPeices;
@@ -72,6 +74,8 @@ class Chessboard {
         void switchColor();
 
         Chessboard(const Chessboard& other) {
+            this->gameOver = other.gameOver;
+
             this->colorToPlay = other.colorToPlay;
             this->enemyRank = other.enemyRank;
             this->yourPawnsEligableForDoubleMove = other.yourPawnsEligableForDoubleMove;

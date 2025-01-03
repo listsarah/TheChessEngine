@@ -93,5 +93,7 @@ class Brain {
 
         Brain();
 
-        u_int8_t minimax(Chessboard board, int depth, bool isMinimizing);
+        float minimax(Chessboard board, int depth);
+
+        int evaluate(Chessboard board);
 };
