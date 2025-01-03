@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "chessboard.h"
 class Brain {
     public:
         int whiteKingWeight = 900;
@@ -76,6 +77,8 @@ class Brain {
         std::vector<double> blackKnightPSQT = {};
         std::vector<double> blackPawnPSQT = {};
 
+        u_int8_t currBestMove = 0;
+
         void setupPSQT(){
             int vectorLength = size(whiteKingPSQT);
             for(int i = 0; i<vectorLength; i++){
@@ -87,4 +90,8 @@ class Brain {
                 blackPawnPSQT.push_back(whitePawnPSQT[vectorLength-1-i]);
             }
         }
+
+        Brain();
+
+        u_int8_t minimax(Chessboard board, int depth, bool isMinimizing);
 };
