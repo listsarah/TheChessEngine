@@ -69,4 +69,22 @@ class Brain {
                                               0.5,  1.0,  1.0, -2.0, -2.0,  1.0,  1.0,  0.5,
                                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
 
+        std::vector<double> blackKingPSQT = {};
+        std::vector<double> blackQueenPSQT = {};
+        std::vector<double> blackRookPSQT = {};
+        std::vector<double> blackBishopPSQT = {};
+        std::vector<double> blackKnightPSQT = {};
+        std::vector<double> blackPawnPSQT = {};
+
+        void setupPSQT(){
+            int vectorLength = size(whiteKingPSQT);
+            for(int i = 0; i<vectorLength; i++){
+                blackKingPSQT.push_back(whiteKingPSQT[vectorLength-1-i]);
+                blackQueenPSQT.push_back(whiteQueenPSQT[vectorLength-1-i]);
+                blackRookPSQT.push_back(whiteRookPSQT[vectorLength-1-i]);
+                blackBishopPSQT.push_back(whiteBishopPSQT[vectorLength-1-i]);
+                blackKnightPSQT.push_back(whiteKnightPSQT[vectorLength-1-i]);
+                blackPawnPSQT.push_back(whitePawnPSQT[vectorLength-1-i]);
+            }
+        }
 };
