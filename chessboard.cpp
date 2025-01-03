@@ -407,7 +407,7 @@ int getRank(int index){
 std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
   std::vector<u_int16_t> possiblePawnMoves = {};
   int startingIndex = 0;
-  if((this->yourPawns & u_int64_t(1)<<currIndex) & (this->pawnsElegibleForDoubleMove & (u_int8_t(1)<<(currIndex%8)))) startingIndex = 1;
+  if((this->yourPawns & u_int64_t(1)<<currIndex) & (this->yourPawnsEligableForDoubleMove & (u_int8_t(1)<<(currIndex%8)))) startingIndex = 1;
   for(int i = startingIndex; i<size(this->pawnMoves); i++){
     for(int j = 0; j<size(this->pawnMoves[i]); j++){
       int movingToIndex = currIndex+this->pawnMoves[i][j];
@@ -716,19 +716,42 @@ void Chessboard::switchColor(){
             this->enemyPeices = intermediate.yourPeices;
         }
 
-std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList){
-  std::vector<Chessboard> possibleBoards = this->movesToBoards(fullMoveList);
-  for(int i=0; i<size(fullMoveList); i++){
 
+std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std::vector<u_int16_t>> yourFullMoveList){
+  std::vector<Chessboard> yourPossibleBoards = this->movesToBoards(yourFullMoveList);
+  std::vector<std::vector<u_int16_t>> nonCheckMoves = {{},{},{},{},{},{}};
+  int boardIndex = 0;
+  for(int i=0; i<size(yourFullMoveList); i++){
+    for(int j=0; j<size(yourFullMoveList[i]); j++){
+      yourPossibleBoards[boardIndex].switchColor();
+      std::vector<std::vector<u_int16_t>> enemyMoves = yourPossibleBoards[boardIndex].getLegalMoves();
+      std::vector<Chessboard> enemyPossibleBoards = yourPossibleBoards[boardIndex].movesToBoards(enemyMoves);
+      bool check = false;
+      for(int k=0; k<size(enemyPossibleBoards); k++){
+        if(!enemyPossibleBoards[k].enemyKing){
+          #ifdef DEBUG_PRINT_ENABLED
+            std::cout<<"this move puts kind in check. Move: " << i << "\n"; 
+          #endif
+          check = true;
+          break;
+        }
+      }
+      boardIndex ++;
+      if(!check){
+        nonCheckMoves[i].push_back(yourFullMoveList[i][j]);
+      }
+    }
   }
+  return nonCheckMoves;
 }
 
 int main(){
 Chessboard board = Chessboard(false);
-board.configureBoards("3n4/4P3/8/8/8/8/4n3/3P4");
+board.configureBoards("3rK4/4P3/8/8/8/8/4n3/3P4");
 board.prettyPrint();
 std::vector<std::vector<u_int16_t>> moves = board.getLegalMoves();
-std::vector<Chessboard> manyBoards = board.movesToBoards(moves);
+std::vector<std::vector<u_int16_t>> goodMoves = board.removeCheckMoves(moves);
+std::vector<Chessboard> manyBoards = board.movesToBoards(goodMoves);
 for(int i = 0; i<size(manyBoards); i++){
   manyBoards[i].prettyPrint();
   std::cout << "---------------------" << "\n";

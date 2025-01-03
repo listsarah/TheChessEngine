@@ -69,38 +69,7 @@ class Chessboard {
         int main();
         Chessboard(bool blackPeicesHuh);
 
-        void switchColor(){
-            Chessboard intermediate = Chessboard(*this);
-            this->colorToPlay = !this->colorToPlay;
-            if(this->colorToPlay){
-                this->pawnMoves = this->pawnMovesBlack;
-                this->enemyRank = 7;
-            }
-            else{
-                this->pawnMoves = this->pawnMovesWhite;
-                this->enemyRank = 0;
-            }
-            this->yourPawnsEligableForDoubleMove = this->enemyPawnsEligableForDoubleMove;
-            this->enemyPawnsEligableForDoubleMove = intermediate.yourPawnsEligableForDoubleMove;
-            this->yourKingIndex = this->enemyKingIndex;
-            this->enemyKingIndex = intermediate.yourKingIndex;
-
-            this->yourKing = this->enemyKing;
-            this->yourQueen = this->enemyQueen;
-            this->yourRooks = this->enemyRooks;
-            this->yourBishops = this->enemyBishops;
-            this->yourKnights = this->enemyKnights;
-            this->yourPawns = this->enemyPawns;
-            this->enemyKing = intermediate.yourKing;
-            this->enemyQueen = intermediate.yourQueen;
-            this->enemyRooks = intermediate.yourRooks;
-            this->enemyBishops = intermediate.yourBishops;
-            this->enemyKnights = intermediate.yourKnights;
-            this->enemyPawns = intermediate.yourPawns;
-
-            this->yourPeices = this->enemyPeices;
-            this->enemyPeices = intermediate.yourPeices;
-        }
+        void switchColor();
 
         Chessboard(const Chessboard& other) {
             this->colorToPlay = other.colorToPlay;
