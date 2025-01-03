@@ -10,6 +10,7 @@ float Brain::minimax(Chessboard board, int depth){
     if(depth == 0 || !board.gameOver){
         return this->evaluate(board);
     }
+    
     if(!board.colorToPlay){
         float maxEval = -float('inf');
         std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(board.getLegalMoves());
