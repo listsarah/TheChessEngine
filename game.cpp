@@ -1,9 +1,11 @@
 #include <iostream>
 #include <math.h>
 #include "game.h"
+#include <algorithm>
+#include <cctype>
 
 Game::Game(){
-    this->playGameCLI(3);
+    this->playGameUCI(2);
 }
 
 void Game::playGameCLI(int depth){
@@ -34,7 +36,53 @@ void Game::playGameCLI(int depth){
 }
 
 void Game::playGameUCI(int depth){
-    
+    while(true){
+        std::string command;
+        if (!std::getline(std::cin, command)) {
+            break;
+        }
+        if (command == "uci") {
+            std::cout << "id name Pringles\n";
+            std::cout << "id author Sarah\n";
+            std::cout << "uciok\n";
+        }
+        else if(command == "isready") {
+            std::cout << "readyok\n";
+        }
+        else if(command == "ucinewgame") {
+            this->board.configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        }
+        else if(command.rfind("position", 0) == 0) {
+            bool color = this->board.colorToPlay;
+            command.erase(std::remove_if(command.begin(), command.end(), ::isspace),command.end());
+            int movesIndex = command.rfind("moves");
+            int fenIndex = command.rfind("fen");    
+            if(command.rfind("startpos") < command.length()){
+                this->board.configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+
+                }
+            else if(fenIndex < command.length()){
+                this->board.configureBoards(command.substr(fenIndex + 3, command.length() - fenIndex - 3 -(command.length() - movesIndex)));
+                this->board.prettyPrint();
+            }
+            std::string moves = command.substr(movesIndex+5);
+            std::cout<<moves<<"\n";
+            for(int i = 0; i<size(moves)/4;i++){
+                this->board = this->board.configureBoardFromAlgMove(moves.substr(4*i, 4));
+                this->board.switchColor();
+                this->board.prettyPrint();
+                }
+            this->board.switchColor(color);
+        }
+        else if(command.rfind("go", 0) == 0) {
+            u_int16_t move = this->brain.getBestMove(this->board, depth);
+            std::string moveStr = this->board.moveToLongAlgebraic(move);
+            std::cout<<"bestmove " + moveStr << "\n";
+        }
+        else if (command == "quit") {
+            break;
+        }
+    } 
 }
 
 // first move: rnbqkbnr/pppp1ppp/8/4p3/8/2N5/PPPPPPPP/R1BQKBNR

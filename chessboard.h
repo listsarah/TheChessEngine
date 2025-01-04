@@ -73,10 +73,13 @@ class Chessboard {
 
         std::string moveToLongAlgebraic(u_int16_t move);
         u_int16_t longAlgebraicToMove(std::string longAlg);
+
+        Chessboard configureBoardFromAlgMove(std::string rankAndFile);
         
         Chessboard(bool blackPeicesHuh);
 
         void switchColor();
+        void switchColor(bool blackPeicesHuh);
 
         Chessboard(const Chessboard& other) {
             this->gameOver = other.gameOver;
