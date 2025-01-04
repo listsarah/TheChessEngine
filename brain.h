@@ -4,18 +4,18 @@
 #include "chessboard.h"
 class Brain {
     public:
-        int whiteKingWeight = 900;
-        int whiteQueenWeight = 90;
-        int whiteRookWeight = 50;
-        int whiteBishopWeight = 30;
-        int whiteKnightWeight = 30;
-        int whitePawnWeight = 10;
-        int blackKingWeight = -900;
-        int blackQueenWeight = -90;
-        int blackRookWeight = -50;
-        int blackBishopWeight = -30;
-        int blackKnightWeight = -30;
-        int blackPawnWeight = -10;
+        float whiteKingWeight = 900;
+        float whiteQueenWeight = 90;
+        float whiteRookWeight = 50;
+        float whiteBishopWeight = 30;
+        float whiteKnightWeight = 30;
+        float whitePawnWeight = 10;
+        float blackKingWeight = -900;
+        float blackQueenWeight = -90;
+        float blackRookWeight = -50;
+        float blackBishopWeight = -30;
+        float blackKnightWeight = -30;
+        float blackPawnWeight = -10;
 
         std::vector<double> whiteKingPSQT =  {-3, -4, -4, -5, -5, -4, -4, -3,
                                               -3, -4, -4, -5, -5, -4, -4, -3,
@@ -81,12 +81,12 @@ class Brain {
         void setupPSQT(){
             int vectorLength = size(whiteKingPSQT);
             for(int i = 0; i<vectorLength; i++){
-                blackKingPSQT.push_back(whiteKingPSQT[vectorLength-1-i]);
-                blackQueenPSQT.push_back(whiteQueenPSQT[vectorLength-1-i]);
-                blackRookPSQT.push_back(whiteRookPSQT[vectorLength-1-i]);
-                blackBishopPSQT.push_back(whiteBishopPSQT[vectorLength-1-i]);
-                blackKnightPSQT.push_back(whiteKnightPSQT[vectorLength-1-i]);
-                blackPawnPSQT.push_back(whitePawnPSQT[vectorLength-1-i]);
+                blackKingPSQT.push_back(-1.0*whiteKingPSQT[vectorLength-1-i]);
+                blackQueenPSQT.push_back(-1.0*whiteQueenPSQT[vectorLength-1-i]);
+                blackRookPSQT.push_back(-1.0*whiteRookPSQT[vectorLength-1-i]);
+                blackBishopPSQT.push_back(-1.0*whiteBishopPSQT[vectorLength-1-i]);
+                blackKnightPSQT.push_back(-1.0*whiteKnightPSQT[vectorLength-1-i]);
+                blackPawnPSQT.push_back(-1.0*whitePawnPSQT[vectorLength-1-i]);
             }
         }
 
@@ -94,7 +94,7 @@ class Brain {
 
         float minimax(Chessboard board, int depth);
 
-        int evaluate(Chessboard board);
+        float evaluate(Chessboard board);
 
         u_int16_t getBestMove(Chessboard board, int depth);
 };

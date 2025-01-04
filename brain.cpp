@@ -43,32 +43,32 @@ float Brain::minimax(Chessboard board, int depth){
     
 }
 
-int Brain::evaluate(Chessboard board){
-    int score = 0;
+float Brain::evaluate(Chessboard board){
+    float score = 0;
     for(u_int64_t i = 0; i<64; i++){
       if(board.enemyKing & u_int64_t(1)<<i){
-        if(board.colorToPlay) score += this->blackKingWeight + this->blackKingPSQT[i];
-        else score += this->whiteKingWeight + this->whiteKingPSQT[i];
+        if(board.colorToPlay) score += this->whiteKingWeight + this->whiteKingPSQT[i];
+        else score += this->blackKingWeight + this->blackKingPSQT[i];
       }
       else if(board.enemyQueen & u_int64_t(1)<<i){
-        if(board.colorToPlay) score += this->blackQueenWeight + this->blackQueenPSQT[i];
-        else score += this->whiteQueenWeight + this->whiteQueenPSQT[i];
+        if(board.colorToPlay) score += this->whiteQueenWeight + this->whiteQueenPSQT[i];
+        else score += this->blackQueenWeight + this->blackQueenPSQT[i];
       }
       else if(board.enemyRooks & u_int64_t(1)<<i){
-        if(board.colorToPlay) score += this->blackRookWeight + this->blackRookPSQT[i];
-        else score += this->whiteRookWeight + this->whiteRookPSQT[i];
+        if(board.colorToPlay) score += this->whiteRookWeight + this->whiteRookPSQT[i];
+        else score += this->blackRookWeight + this->blackRookPSQT[i];
       }
       else if(board.enemyBishops & u_int64_t(1)<<i){
-        if(board.colorToPlay) score += this->blackBishopWeight + this->blackBishopPSQT[i];
-        else score += this->whiteBishopWeight + this->whiteBishopPSQT[i];
+        if(board.colorToPlay) score += this->whiteBishopWeight + this->whiteBishopPSQT[i];
+        else score += this->blackBishopWeight + this->blackBishopPSQT[i];
       }
       else if(board.enemyKnights & u_int64_t(1)<<i){
-        if(board.colorToPlay) score += this->blackKnightWeight + this->blackKnightPSQT[i];
-        else score += this->whiteKnightWeight + this->whiteKnightPSQT[i];
+        if(board.colorToPlay) score += this->whiteKnightWeight + this->whiteKnightPSQT[i];
+        else score += this->blackKnightWeight + this->blackKnightPSQT[i];
       }
       else if(board.enemyPawns & u_int64_t(1)<<i){
-        if(board.colorToPlay) score += this->blackPawnWeight + this->blackPawnPSQT[i];
-        else score += this->whitePawnWeight + this->whitePawnPSQT[i];
+        if(board.colorToPlay) score += this->whitePawnWeight + this->whitePawnPSQT[i];
+        else score += this->blackPawnWeight + this->blackPawnPSQT[i];
       }
       else if(board.yourKing & u_int64_t(1)<<i){
         if(board.colorToPlay) score += this->blackKingWeight + this->blackKingPSQT[i];
@@ -95,7 +95,7 @@ int Brain::evaluate(Chessboard board){
         else score += this->whitePawnWeight + this->whitePawnPSQT[i];
       }
     }
-    return score;
+    return float(score);
 }
 
 u_int16_t Brain::getBestMove(Chessboard board, int depth){
