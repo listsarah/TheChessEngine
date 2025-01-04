@@ -7,19 +7,22 @@ Brain::Brain(){
 }
 
 float Brain::minimax(Chessboard board, int depth){
-    if(depth == 0 || !board.gameOver){
+    if(depth == 0 || board.gameOver){
+      #ifdef DEBUG_PRINT_ENABLED
+        std::cout<<"eval: "<<this->evaluate(board)<<"\n";
+      #endif
         return this->evaluate(board);
+
     }
     if(!board.colorToPlay){
         float maxEval = -10000;
         std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(board.getLegalMoves());
         for(int i = 0; i<size(moves); i++){
             for(int j = 0; j<size(moves[i]); j++){
-                Chessboard childBoard = board.movesToBoards({{moves[i][j]}})[0];
+                Chessboard childBoard = board.moveToBoard(moves[i][j]);
                 childBoard.switchColor();
                 float eval = this->minimax(childBoard, depth-1);
                 maxEval = std::max(maxEval, eval);
-                
             }
         }
         return maxEval;
@@ -29,11 +32,10 @@ float Brain::minimax(Chessboard board, int depth){
         std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(board.getLegalMoves());
         for(int i = 0; i<size(moves); i++){
             for(int j = 0; j<size(moves[i]); j++){
-                Chessboard childBoard = board.movesToBoards({{moves[i][j]}})[0];
+                Chessboard childBoard = board.moveToBoard(moves[i][j]);
                 childBoard.switchColor();
                 float eval = this->minimax(childBoard, depth-1);
                 minEval = std::min(minEval, eval);
-                
             }
         }
         return minEval;
@@ -96,14 +98,15 @@ int Brain::evaluate(Chessboard board){
     return score;
 }
 
-u_int8_t Brain::getBestMove(Chessboard board, int depth){
-    std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(board.getLegalMoves());
+u_int16_t Brain::getBestMove(Chessboard board, int depth){
+    std::vector<std::vector<u_int16_t>> legalMoves = board.getLegalMoves();
+    std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(legalMoves);
     std::vector<std::vector<float>> scores = {{},{},{},{},{},{}};
     for(int i = 0; i<size(moves); i++){
       for(int j = 0; j<size(moves[i]); j++){
-        Chessboard currBoard = board.movesToBoards({{moves[i][j]}})[0];
+        Chessboard currBoard = board.moveToBoard(moves[i][j]);
         currBoard.switchColor();
-        scores[i][j] = minimax(currBoard, depth);
+        scores[i].push_back(minimax(currBoard, depth));
       }
     }
     int bestIndexI = -2;

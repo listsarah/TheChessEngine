@@ -8,8 +8,9 @@ Game::Game(){
 
 void Game::playGame(int depth){
     if(!this->board.colorToPlay){
-        u_int8_t move = this->brain.getBestMove(this->board, depth);
-        this->board = this->board.movesToBoards({{move}})[0];
+        u_int16_t move = this->brain.getBestMove(this->board, depth);
+        std::cout<< move <<"\n";
+        this->board = this->board.moveToBoard(move);
         this->board.prettyPrint();
         std::string responseFen = "";
         std::cin >> responseFen;
@@ -19,4 +20,6 @@ void Game::playGame(int depth){
 
 int main(){
     Game game = Game();
+    // Chessboard board = Chessboard(false);
+    // board.getLegalMoves();
 }

@@ -69,6 +69,8 @@ class Chessboard {
         std::vector<std::vector<u_int16_t>> removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList);
         std::vector<Chessboard> movesToBoards(std::vector<std::vector<u_int16_t>> moves);
 
+        Chessboard moveToBoard(u_int16_t move);
+
         // int main();
         Chessboard(bool blackPeicesHuh);
 

@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include "chessboard.h"
 #include <math.h>
@@ -141,6 +140,7 @@ void Chessboard::configureBoards(std::string fen){
     }
   }
   if(this->colorToPlay){
+    std::cout<<"should not print \n";
     this->yourKing = blackKingBoard;
     this->yourQueen = blackQueenBoard;
     this->yourRooks = blackRookBoard;
@@ -158,6 +158,7 @@ void Chessboard::configureBoards(std::string fen){
     this->enemyKingIndex = whiteKingIndex;
   }
   else{
+
     this->yourKing = whiteKingBoard;
     this->yourQueen = whiteQueenBoard;
     this->yourRooks = whiteRookBoard;
@@ -255,8 +256,6 @@ std::vector<std::vector<u_int16_t>> Chessboard::getLegalMoves(){
   std::vector<u_int16_t> possibleBishopMoves = {};
   std::vector<u_int16_t> possibleKnightMoves = {};
   std::vector<u_int16_t> possiblePawnMoves = {};
-
-
   for(u_int64_t i = 0; i<64; i++){
     if(yourKing & u_int64_t(1)<<i){
       std::vector<u_int16_t> legalKingMoves = this->getLegalMovesKing(i);
@@ -277,7 +276,7 @@ std::vector<std::vector<u_int16_t>> Chessboard::getLegalMoves(){
     }
     else if(yourKnights & u_int64_t(1)<<i){
       std::vector<u_int16_t> legalKnightMoves = this->getLegalMovesKnight(i);
-      possibleKingMoves.insert(possibleKnightMoves.end(), legalKnightMoves.begin(), legalKnightMoves.end());
+      possibleKnightMoves.insert(possibleKnightMoves.end(), legalKnightMoves.begin(), legalKnightMoves.end());
     }
     else if(yourPawns & u_int64_t(1)<<i){
       std::vector<u_int16_t> legalPawnMoves = this->getLegalMovesPawn(i);
@@ -327,7 +326,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
             std::cout << "\n";
           #endif
         }
-        if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
+        if(this->allPeices & (u_int64_t(1) << movingToIndex)!=0) break;
     }
   }
   return possibleQueenMoves;
@@ -350,7 +349,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
             std::cout << "\n";
           #endif
         }
-        if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
+        if(this->allPeices & (u_int64_t(1) << movingToIndex)!=0) break;
     }
   }
   return possibleRookMoves;
@@ -373,7 +372,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
             std::cout << "\n";
           #endif
         }
-        if(int(this->allPeices & (u_int64_t(1) << movingToIndex))) break;
+        if(this->allPeices & (u_int64_t(1) << movingToIndex)!=0) break;
     }
   }
   return possibleBishopMoves;
@@ -504,6 +503,180 @@ std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
   return possiblePawnMoves;
 }
 
+Chessboard Chessboard::moveToBoard(u_int16_t move){
+  u_int16_t flag = move & u_int16_t(15);
+  u_int16_t fromIndex = (move & 0b1111110000000000) >> 10;
+  u_int16_t toIndex = (move & 0b0000001111110000) >> 4;
+  Chessboard currentBoard = Chessboard(*this);
+
+  if(currentBoard.yourKing & (u_int64_t(1) << fromIndex)){
+    if(flag == 4){
+      currentBoard.yourKing &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourKing |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else{
+      currentBoard.yourKing &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourKing |= u_int64_t(1) << toIndex;
+    }
+  }
+  else if(currentBoard.yourQueen & (u_int64_t(1) << fromIndex)){
+    if(flag == 4){
+      currentBoard.yourQueen &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourQueen |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else{
+      currentBoard.yourQueen &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourQueen |= u_int64_t(1) << toIndex;
+    }
+  }
+  else if(currentBoard.yourRooks & (u_int64_t(1) << fromIndex)){
+    if(flag == 4){
+      currentBoard.yourRooks &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourRooks |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else{
+      currentBoard.yourRooks &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourRooks |= u_int64_t(1) << toIndex;
+    }
+  }
+  else if(currentBoard.yourBishops & (u_int64_t(1) << fromIndex)){
+    if(flag == 4){
+      currentBoard.yourBishops &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourBishops |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else{
+      currentBoard.yourBishops &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourBishops |= u_int64_t(1) << toIndex;
+    }
+  }
+  else if(currentBoard.yourKnights & (u_int64_t(1) << fromIndex)){
+    if(flag == 4){
+      currentBoard.yourKnights &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourKnights |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else{
+      currentBoard.yourKnights &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourKnights |= u_int64_t(1) << toIndex;
+    }
+  }
+  else if(currentBoard.yourPawns & (u_int64_t(1) << fromIndex)){
+    if(flag == 0 || flag == 1){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourPawns |= u_int64_t(1) << toIndex;
+    }
+    else if(flag == 4 || flag == 5){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourPawns |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else if(flag == 6){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourKnights |= u_int64_t(1) << toIndex;
+    }
+    else if(flag == 7){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourBishops |= u_int64_t(1) << toIndex;
+    }
+    else if(flag == 8){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourRooks |= u_int64_t(1) << toIndex;
+    }
+    else if(flag == 9){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourQueen |= u_int64_t(1) << toIndex;
+    }
+    else if(flag == 10){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourKnights |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else if(flag == 11){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourBishops |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else if(flag == 12){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourRooks |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+    else if(flag == 13){
+      currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
+      currentBoard.yourQueen |= u_int64_t(1) << toIndex;
+
+      currentBoard.enemyKing &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyQueen &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyRooks &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
+      currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
+    }
+  }
+  currentBoard.enemyPeices = currentBoard.enemyKing | currentBoard.enemyQueen | currentBoard.enemyRooks | currentBoard.enemyBishops | currentBoard.enemyKnights | currentBoard.enemyPawns;
+  currentBoard.yourPeices = currentBoard.yourKing | currentBoard.yourQueen | currentBoard.yourRooks | currentBoard.yourBishops | currentBoard.yourKnights | currentBoard.yourPawns;
+  currentBoard.allPeices = currentBoard.enemyPeices | currentBoard.yourPeices;
+  return currentBoard;
+}
+
 //possibleKingMoves, possibleQueenMoves, possibleRookMoves, possibleBishopMoves, possibleKnightMoves, possiblePawnMoves
 std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int16_t>> moves){
   std::vector<Chessboard> retList = {};
@@ -548,6 +721,7 @@ std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int1
           currentBoard.yourQueen &= ~(u_int64_t(1) << fromIndex);
           currentBoard.yourQueen |= u_int64_t(1) << toIndex;
         }
+        break;
       case 2:
         if(flag == 4){
           currentBoard.yourRooks &= ~(u_int64_t(1) << fromIndex);
@@ -564,7 +738,7 @@ std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int1
           currentBoard.yourRooks &= ~(u_int64_t(1) << fromIndex);
           currentBoard.yourRooks |= u_int64_t(1) << toIndex;
         }
-      
+        break;
       case 3:
         if(flag == 4){
           currentBoard.yourBishops &= ~(u_int64_t(1) << fromIndex);
@@ -581,7 +755,7 @@ std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int1
           currentBoard.yourBishops &= ~(u_int64_t(1) << fromIndex);
           currentBoard.yourBishops |= u_int64_t(1) << toIndex;
         }
-
+        break;
       case 4:
         if(flag == 4){
           currentBoard.yourKnights &= ~(u_int64_t(1) << fromIndex);
@@ -598,6 +772,7 @@ std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int1
           currentBoard.yourKnights &= ~(u_int64_t(1) << fromIndex);
           currentBoard.yourKnights |= u_int64_t(1) << toIndex;
         }
+        break;
       case 5:
         if(flag == 0 || flag == 1){
           currentBoard.yourPawns &= ~(u_int64_t(1) << fromIndex);
@@ -674,6 +849,7 @@ std::vector<Chessboard> Chessboard::movesToBoards(std::vector<std::vector<u_int1
           currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
           currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
         }
+        break;
       }
       currentBoard.enemyPeices = currentBoard.enemyKing | currentBoard.enemyQueen | currentBoard.enemyRooks | currentBoard.enemyBishops | currentBoard.enemyKnights | currentBoard.enemyPawns;
       currentBoard.yourPeices = currentBoard.yourKing | currentBoard.yourQueen | currentBoard.yourRooks | currentBoard.yourBishops | currentBoard.yourKnights | currentBoard.yourPawns;

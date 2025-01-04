@@ -96,5 +96,5 @@ class Brain {
 
         int evaluate(Chessboard board);
 
-        u_int8_t getBestMove(Chessboard board, int depth);
+        u_int16_t getBestMove(Chessboard board, int depth);
 };
