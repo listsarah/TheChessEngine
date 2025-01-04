@@ -10,7 +10,6 @@ float Brain::minimax(Chessboard board, int depth){
     if(depth == 0 || !board.gameOver){
         return this->evaluate(board);
     }
-    
     if(!board.colorToPlay){
         float maxEval = -float('inf');
         std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(board.getLegalMoves());
@@ -95,4 +94,44 @@ int Brain::evaluate(Chessboard board){
       }
     }
     return score;
+}
+
+u_int8_t Brain::getBestMove(Chessboard board, int depth){
+    std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(board.getLegalMoves());
+    std::vector<std::vector<float>> scores = {{},{},{},{},{},{}};
+    for(int i = 0; i<size(moves); i++){
+      for(int j = 0; j<size(moves[i]); j++){
+        Chessboard currBoard = board.movesToBoards({{moves[i][j]}})[0];
+        currBoard.switchColor();
+        scores[i][j] = minimax(currBoard, depth);
+      }
+    }
+    int bestIndexI = -2;
+    int bestIndexJ = -2;
+    int bestScore = 0;
+    if(board.colorToPlay){
+      bestScore = int('inf');
+    }
+    else{
+      bestScore = -int('inf');
+    }
+    for(int i = 0; i<size(scores); i++){
+      for(int j = 0; j<size(scores[i]); j++){
+        if(board.colorToPlay){
+          if(scores[i][j] < bestScore){
+            bestScore = scores[i][j];
+            bestIndexI = i;
+            bestIndexJ = j;
+          }
+        }
+        else{
+          if(scores[i][j] > bestScore){
+            bestScore = scores[i][j];
+            bestIndexI = i;
+            bestIndexJ = j;
+        }
+      }
+    }
+  }
+  return moves[bestIndexI][bestIndexJ];
 }

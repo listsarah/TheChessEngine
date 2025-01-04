@@ -77,8 +77,6 @@ class Brain {
         std::vector<double> blackKnightPSQT = {};
         std::vector<double> blackPawnPSQT = {};
 
-        u_int8_t currBestMove = 0;
-
         void setupPSQT(){
             int vectorLength = size(whiteKingPSQT);
             for(int i = 0; i<vectorLength; i++){
@@ -96,4 +94,6 @@ class Brain {
         float minimax(Chessboard board, int depth);
 
         int evaluate(Chessboard board);
+
+        u_int8_t getBestMove(Chessboard board, int depth);
 };
