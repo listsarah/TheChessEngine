@@ -71,7 +71,9 @@ class Chessboard {
 
         Chessboard moveToBoard(u_int16_t move);
 
-        // int main();
+        std::string moveToLongAlgebraic(u_int16_t move);
+        u_int16_t longAlgebraicToMove(std::string longAlg);
+        
         Chessboard(bool blackPeicesHuh);
 
         void switchColor();

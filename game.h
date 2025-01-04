@@ -8,6 +8,7 @@ class Game {
         Chessboard board = Chessboard(false);
         Brain brain = Brain();
         Game();
-        void playGame(int depth);
+        void playGameCLI(int depth);
+        void playGameUCI(int depth);
         int main();
 };

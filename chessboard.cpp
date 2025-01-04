@@ -404,6 +404,16 @@ int getRank(int index){
   return floor(index/8);
 }
 
+std::string getFile(int index){
+  std::vector<std::string> files = {"a", "b", "c", "d", "e", "f", "g", "h"};
+  return files[index%8];
+}
+
+// int rankAngFileToIndex = (std::string rankAndFile){
+//   for(int i = 0; i<fen.length(); i++){
+//     currChar = fen.at(i);
+// }
+
 std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
   std::vector<u_int16_t> possiblePawnMoves = {};
   int startingIndex = 0;
@@ -928,17 +938,30 @@ std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std
   return nonCheckMoves;
 }
 
-// int main(){
-// Chessboard board = Chessboard(false);
-// board.configureBoards("r3K4/r3P3/8/8/8/8/4n3/3P4");
-// board.prettyPrint();
-// std::vector<std::vector<u_int16_t>> moves = board.getLegalMoves();
-// std::vector<std::vector<u_int16_t>> goodMoves = board.removeCheckMoves(moves);
-// std::vector<Chessboard> manyBoards = board.movesToBoards(goodMoves);
-// for(int i = 0; i<size(manyBoards); i++){
-//   manyBoards[i].prettyPrint();
-//   std::cout << "---------------------" << "\n";
-// }
-// std::cout << "done" << "\n";
+std::string Chessboard::moveToLongAlgebraic(u_int16_t move){
+  u_int16_t flag = move & u_int16_t(15);
+  u_int16_t fromIndex = (move & 0b1111110000000000) >> 10;
+  u_int16_t toIndex = (move & 0b0000001111110000) >> 4;
 
-// }
+  std::string fromIndexString = "";
+  std::string toIndexString = "";
+
+  int fromRank = 8-getRank(int(fromIndex));
+  int toRank = 8-getRank(int(toIndex));
+  std::string fromFile = getFile(int(fromIndex));
+  std::string toFile = getFile(int(toIndex));
+
+  std::string promotion = "";
+  if(flag == 6 || flag == 10) promotion = "n";
+  else if(flag == 7 || flag == 11) promotion = "b";
+  else if(flag == 8 || flag == 12) promotion = "r";
+  else if(flag == 9 || flag == 13) promotion = "q";
+
+  std::string retStr = fromFile + std::to_string(fromRank) + toFile + std::to_string(toRank) + promotion;
+  #ifdef DEBUG_PRINT_ENABLED
+    std::cout<< retStr << "\n"; 
+  #endif
+  return retStr;
+}
+
+u_int16_t longAlgebraicToMove(std::string longAlg);

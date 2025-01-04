@@ -3,10 +3,10 @@
 #include "game.h"
 
 Game::Game(){
-    this->playGame(3);
+    this->playGameCLI(3);
 }
 
-void Game::playGame(int depth){
+void Game::playGameCLI(int depth){
     if(!this->board.colorToPlay){
         while(true){
             u_int16_t move = this->brain.getBestMove(this->board, depth);
@@ -31,6 +31,10 @@ void Game::playGame(int depth){
             this->board = this->board.moveToBoard(move);
         }
     }
+}
+
+void Game::playGameUCI(int depth){
+    
 }
 
 // first move: rnbqkbnr/pppp1ppp/8/4p3/8/2N5/PPPPPPPP/R1BQKBNR
