@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <list>
@@ -68,7 +69,7 @@ class Chessboard {
         std::vector<std::vector<u_int16_t>> removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList);
         std::vector<Chessboard> movesToBoards(std::vector<std::vector<u_int16_t>> moves);
 
-        int main();
+        // int main();
         Chessboard(bool blackPeicesHuh);
 
         void switchColor();

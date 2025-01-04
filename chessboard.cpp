@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include "chessboard.h"
 #include <math.h>
@@ -751,17 +752,17 @@ std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std
   return nonCheckMoves;
 }
 
-int main(){
-Chessboard board = Chessboard(false);
-board.configureBoards("r3K4/r3P3/8/8/8/8/4n3/3P4");
-board.prettyPrint();
-std::vector<std::vector<u_int16_t>> moves = board.getLegalMoves();
-std::vector<std::vector<u_int16_t>> goodMoves = board.removeCheckMoves(moves);
-std::vector<Chessboard> manyBoards = board.movesToBoards(goodMoves);
-for(int i = 0; i<size(manyBoards); i++){
-  manyBoards[i].prettyPrint();
-  std::cout << "---------------------" << "\n";
-}
-std::cout << "done" << "\n";
+// int main(){
+// Chessboard board = Chessboard(false);
+// board.configureBoards("r3K4/r3P3/8/8/8/8/4n3/3P4");
+// board.prettyPrint();
+// std::vector<std::vector<u_int16_t>> moves = board.getLegalMoves();
+// std::vector<std::vector<u_int16_t>> goodMoves = board.removeCheckMoves(moves);
+// std::vector<Chessboard> manyBoards = board.movesToBoards(goodMoves);
+// for(int i = 0; i<size(manyBoards); i++){
+//   manyBoards[i].prettyPrint();
+//   std::cout << "---------------------" << "\n";
+// }
+// std::cout << "done" << "\n";
 
-}
+// }
