@@ -5,7 +5,6 @@
 Chessboard::Chessboard(bool blackPeicesHuh){
   this->colorToPlay = blackPeicesHuh;
   this->configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-  this->prettyPrint();
   if(blackPeicesHuh){
     this->pawnMoves = this->pawnMovesBlack;
     this->enemyRank = 7;
@@ -137,6 +136,9 @@ void Chessboard::configureBoards(std::string fen){
       {
         std::cerr << e.what() << '\n';
       }
+    }
+    if(currBoardIndex > 63){
+      break;
     }
   }
   if(this->colorToPlay){

@@ -136,6 +136,5 @@ u_int16_t Brain::getBestMove(Chessboard board, int depth){
       }
     }
   }
-  std::cout<<"best move found: " << moves[bestIndexI][bestIndexJ] << "\n";
   return moves[bestIndexI][bestIndexJ];
 }
