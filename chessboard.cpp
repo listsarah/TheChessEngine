@@ -1080,6 +1080,14 @@ std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std
         std::cout << "Game Over" << "\n";
       #endif
     }
+  #ifdef DEBUG_PRINT_ENABLED
+    std::cout << "Noncheck moves: " << "\n";
+    for(int i=0; i<size(nonCheckMoves); i++){
+      for(int j=0; j<size(nonCheckMoves[i]); j++){
+        std::cout << "i: " << i<< " move: "<< nonCheckMoves[i][j]<< "\n";
+      }
+    }
+  #endif
   return nonCheckMoves;
 }
 

@@ -89,15 +89,12 @@ void Game::playGameUCI(int depth){
             this->board.switchColor(color);
             #ifdef DEBUG_PRINT_ENABLED
                 this->board.prettyPrint();
+                this->board.removeCheckMoves(this->board.getLegalMoves());
             #endif
         }
         else if(command.rfind("go", 0) == 0) {
             u_int16_t move = this->brain.getBestMove(this->board, depth);
             std::string moveStr = this->board.moveToLongAlgebraic(move);
-            std::cout<<"bestmove " + moveStr << "\n";
-            std::cout<<"bestmove " + moveStr << "\n";
-            std::cout<<"bestmove " + moveStr << "\n";
-            std::cout<<"bestmove " + moveStr << "\n";
             std::cout<<"bestmove " + moveStr << "\n";
             logMessage("Sent", "bestmove " + moveStr);
             #ifdef DEBUG_PRINT_ENABLED
