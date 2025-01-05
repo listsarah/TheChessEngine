@@ -1060,7 +1060,8 @@ std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std
       std::vector<Chessboard> enemyPossibleBoards = yourPossibleBoards[boardIndex].movesToBoards(enemyMoves);
       bool check = false;
       for(int k=0; k<size(enemyPossibleBoards); k++){
-        if(!enemyPossibleBoards[k].enemyKing){
+        std::cout<<enemyPossibleBoards[k].enemyKing<<"\n";
+        if(enemyPossibleBoards[k].enemyKing == 0){
           #ifdef DEBUG_PRINT_ENABLED
             std::cout<<"this move puts kind in check. Move: " << i << "\n"; 
           #endif
