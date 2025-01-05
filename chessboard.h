@@ -41,8 +41,8 @@ class Chessboard {
         std::vector<int> straighDownMoves = {8, 16, 24, 32, 40, 48, 56};
         std::vector<int> diagonalLeftDownMoves = {7, 14, 21, 28, 35, 42, 49};
         std::vector<int> diagonalRightDownMoves = {9, 18, 27, 36, 45, 54, 63};
-        std::vector<int> diagonalLeftUpMoves = {7, 14, 21, 28, 35, 42, 49};
-        std::vector<int> diagonalRightUpMoves = {9, 18, 27, 36, 45, 54, 63};
+        std::vector<int> diagonalLeftUpMoves = {-7, -14, -21, -28, -35, -42, -49};
+        std::vector<int> diagonalRightUpMoves = {-9, -18, -27, -36, -45, -54, -63};
 
         std::vector<std::vector<int>> pawnMovesWhite = {{-16}, {-8}, {-7, -9}};
         std::vector<std::vector<int>> pawnMovesBlack = {{16}, {8}, {7, 9}};

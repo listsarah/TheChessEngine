@@ -98,6 +98,10 @@ float Brain::evaluate(Chessboard board){
     return float(score);
 }
 
+int getFile(int index){
+  return index%8;
+}
+
 u_int16_t Brain::getBestMove(Chessboard board, int depth){
     std::vector<std::vector<u_int16_t>> legalMoves = board.getLegalMoves();
     std::vector<std::vector<u_int16_t>> moves = board.removeCheckMoves(legalMoves);
@@ -136,5 +140,10 @@ u_int16_t Brain::getBestMove(Chessboard board, int depth){
       }
     }
   }
+  if(moves[bestIndexI][bestIndexJ] & u_int16_t(15) == 1 || moves[bestIndexI][bestIndexJ] & u_int16_t(15) == 5 || moves[bestIndexI][bestIndexJ] & u_int16_t(15) == 14 || moves[bestIndexI][bestIndexJ] & u_int16_t(15) == 15){
+    int index = getFile((moves[bestIndexI][bestIndexJ] & 0b1111110000000000) >> 10);
+    board.yourPawnsEligableForDoubleMove &= ~(u_int64_t(1) << index);
+  }
   return moves[bestIndexI][bestIndexJ];
 }
+
