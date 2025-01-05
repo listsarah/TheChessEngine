@@ -485,8 +485,8 @@ Chessboard Chessboard::configureBoardFromAlgMove(std::string rankAndFile){
     currentBoard.enemyBishops &= ~(u_int64_t(1) << toIndex);
     currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
     currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
-
-    if(currentBoard.yourKing & (u_int64_t(1) << fromIndex)){
+    
+    if((currentBoard.yourKing & (u_int64_t(1) << fromIndex))){
       currentBoard.yourKing &= ~(u_int64_t(1) << fromIndex);
       currentBoard.yourKing |= u_int64_t(1) << toIndex;
 
@@ -530,7 +530,7 @@ Chessboard Chessboard::configureBoardFromAlgMove(std::string rankAndFile){
       currentBoard.enemyKnights &= ~(u_int64_t(1) << toIndex);
       currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
     }
-    else if(currentBoard.yourKnights & (u_int64_t(1) << fromIndex)){
+    else if((currentBoard.yourKnights & (u_int64_t(1) << fromIndex))){
       currentBoard.yourKnights &= ~(u_int64_t(1) << fromIndex);
       currentBoard.yourKnights |= u_int64_t(1) << toIndex;
 
@@ -553,6 +553,9 @@ Chessboard Chessboard::configureBoardFromAlgMove(std::string rankAndFile){
       currentBoard.enemyPawns &= ~(u_int64_t(1) << toIndex);
     }
   }
+  currentBoard.enemyPeices = currentBoard.enemyKing | currentBoard.enemyQueen | currentBoard.enemyRooks | currentBoard.enemyBishops | currentBoard.enemyKnights | currentBoard.enemyPawns;
+  currentBoard.yourPeices = currentBoard.yourKing | currentBoard.yourQueen | currentBoard.yourRooks | currentBoard.yourBishops | currentBoard.yourKnights | currentBoard.yourPawns;
+  currentBoard.allPeices = currentBoard.enemyPeices | currentBoard.yourPeices;
   return currentBoard;
 }
 

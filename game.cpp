@@ -73,7 +73,7 @@ void Game::playGameUCI(int depth){
             int fenIndex = command.rfind("fen"); 
 
             if(command.rfind("startpos") < command.length()){
-                this->board.configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+                // this->board.configureBoards("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
                 }
             else if(fenIndex < command.length()){
@@ -81,7 +81,8 @@ void Game::playGameUCI(int depth){
                 this->board.configureBoards(intermediate);
             }
             std::string moves = command.substr(movesIndex+5);
-            for(int i = 0; i<size(moves)/4;i++){
+            this->board.switchColor();
+            for(int i = 0; i<moves.length()/4;i++){
                 this->board = this->board.configureBoardFromAlgMove(moves.substr(4*i, 4));
                 this->board.switchColor();
                 }
