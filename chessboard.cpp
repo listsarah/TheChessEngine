@@ -393,7 +393,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
             std::cout << "\n";
           #endif
         }
-        if(this->allPeices & (u_int64_t(1) << movingToIndex)!=0) break;
+        if(this->allPeices & (u_int64_t(1) << movingToIndex)) break;
     }
   }
   return possibleRookMoves;
@@ -425,7 +425,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
             std::cout << "\n";
           #endif
         }
-        if(this->allPeices & (u_int64_t(1) << movingToIndex)!=0) break;
+        if(this->allPeices & (u_int64_t(1) << movingToIndex)) break;
     }
   }
   return possibleBishopMoves;

@@ -89,8 +89,8 @@ void Game::playGameUCI(int depth){
             this->board.switchColor(color);
             #ifdef DEBUG_PRINT_ENABLED
                 this->board.prettyPrint();
-                // this->board.getLegalMoves();
-                this->board.removeCheckMoves(this->board.getLegalMoves());
+                this->board.getLegalMoves();
+                // this->board.removeCheckMoves(this->board.getLegalMoves());
             #endif
         }
         else if(command.rfind("go", 0) == 0) {
