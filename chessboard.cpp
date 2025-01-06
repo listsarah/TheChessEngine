@@ -15,6 +15,19 @@ Chessboard::Chessboard(bool blackPeicesHuh){
   } 
 }
 
+int getRank(int index){
+  return floor(index/8);
+}
+
+std::string getFile(int index){
+  std::vector<std::string> files = {"a", "b", "c", "d", "e", "f", "g", "h"};
+  return files[index%8];
+}
+
+int getFileNum(int index){
+  return index%8;
+}
+
 void Chessboard::configureBoards(std::string fen){
   std::string currChar = "";
   u_int8_t currBoardIndex = 0;
@@ -292,13 +305,22 @@ std::vector<std::vector<u_int16_t>> Chessboard::getLegalMoves(){
 }
 
 std::vector<u_int16_t> Chessboard::getLegalMovesKing(int currIndex){
+  int orginalRank = getRank(currIndex);
+  int originalFile = getFileNum(currIndex);
   std::vector<u_int16_t> possibleKingMoves = {};
   for(int i = 0; i<size(this->kingMoves); i++){
+    int lastRank = getRank(currIndex);
+    int lastFile = getFileNum(currIndex);
     for(int j = 0; j<size(this->kingMoves[i]); j++){
       int movingToIndex = currIndex+this->kingMoves[i][j];
         if(movingToIndex >= 0 && movingToIndex < 64 && !(this->yourPeices & (u_int64_t(1) << movingToIndex))){
           u_int16_t move = 0;
           u_int8_t flag = 0;
+          int currRank = getRank(movingToIndex);
+          int currFile = getFileNum(movingToIndex);
+          if(abs(currRank - lastRank) > 1 || abs(currFile - lastFile) > 1) break;
+          lastRank = currRank;
+          lastFile = currFile;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
           move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleKingMoves.push_back(move);
@@ -314,18 +336,27 @@ std::vector<u_int16_t> Chessboard::getLegalMovesKing(int currIndex){
 }
 
 std::vector<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
+  int orginalRank = getRank(currIndex);
+  int originalFile = getFileNum(currIndex);
   std::vector<u_int16_t> possibleQueenMoves = {};
   for(int i = 0; i<size(this->queenMoves); i++){
+    int lastRank = getRank(currIndex);
+    int lastFile = getFileNum(currIndex);
     for(int j = 0; j<size(this->queenMoves[i]); j++){
       int movingToIndex = currIndex+this->queenMoves[i][j];
         if(movingToIndex >= 0 && movingToIndex < 64 && !(this->yourPeices & (u_int64_t(1) << movingToIndex))){
           u_int16_t move = 0;
           u_int8_t flag = 0;
+          int currRank = getRank(movingToIndex);
+          int currFile = getFileNum(movingToIndex);
+          if(abs(currRank - lastRank) > 1 || abs(currFile - lastFile) > 1) break;
+          lastRank = currRank;
+          lastFile = currFile;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
           move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleQueenMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
-            std::cout << "Queen Move Found: " << move << " ";
+            std::cout << "Queen Move Found: " << move << " "<< "i: "<< i <<" "<< this->moveToLongAlgebraic(move);
             if(flag) std::cout << "Capture";
             std::cout << "\n";
           #endif
@@ -338,12 +369,21 @@ std::vector<u_int16_t> Chessboard::getLegalMovesQueen(int currIndex){
 
 std::vector<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
   std::vector<u_int16_t> possibleRookMoves = {};
+  int orginalRank = getRank(currIndex);
+  int originalFile = getFileNum(currIndex);
   for(int i = 0; i<size(this->rookMoves); i++){
+    int lastRank = getRank(currIndex);
+    int lastFile = getFileNum(currIndex);
     for(int j = 0; j<size(this->rookMoves[i]); j++){
       int movingToIndex = currIndex+this->rookMoves[i][j];
         if(movingToIndex >= 0 && movingToIndex < 64 && !(this->yourPeices & (u_int64_t(1) << movingToIndex))){
           u_int16_t move = 0;
           u_int8_t flag = 0;
+          int currRank = getRank(movingToIndex);
+          int currFile = getFileNum(movingToIndex);
+          if(abs(currRank - lastRank) > 1 || abs(currFile - lastFile) > 1) break;
+          lastRank = currRank;
+          lastFile = currFile;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
           move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleRookMoves.push_back(move);
@@ -360,13 +400,22 @@ std::vector<u_int16_t> Chessboard::getLegalMovesRook(int currIndex){
 }
 
 std::vector<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
+  int orginalRank = getRank(currIndex);
+  int originalFile = getFileNum(currIndex);
   std::vector<u_int16_t> possibleBishopMoves = {};
   for(int i = 0; i<size(this->bishopMoves); i++){
+    int lastRank = getRank(currIndex);
+    int lastFile = getFileNum(currIndex);
     for(int j = 0; j<size(this->bishopMoves[i]); j++){
       int movingToIndex = currIndex+this->bishopMoves[i][j];
         if(movingToIndex >= 0 && movingToIndex < 64 && !(this->yourPeices & (u_int64_t(1) << movingToIndex))){
           u_int16_t move = 0;
           u_int8_t flag = 0;
+          int currRank = getRank(movingToIndex);
+          int currFile = getFileNum(movingToIndex);
+          if(abs(currRank - lastRank) > 1 || abs(currFile - lastFile) > 1) break;
+          lastRank = currRank;
+          lastFile = currFile;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
           move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleBishopMoves.push_back(move);
@@ -383,13 +432,22 @@ std::vector<u_int16_t> Chessboard::getLegalMovesBishop(int currIndex){
 }
 
 std::vector<u_int16_t> Chessboard::getLegalMovesKnight(int currIndex){
+  int orginalRank = getRank(currIndex);
+  int originalFile = getFileNum(currIndex);
   std::vector<u_int16_t> possibleKnightMoves = {};
   for(int i = 0; i<size(this->knightMoves); i++){
+    int lastRank = getRank(currIndex);
+    int lastFile = getFileNum(currIndex);
     for(int j = 0; j<size(this->knightMoves[i]); j++){
       int movingToIndex = currIndex+this->knightMoves[i][j];
         if(movingToIndex >= 0 && movingToIndex < 64 && !(this->yourPeices & (u_int64_t(1) << movingToIndex))){
           u_int16_t move = 0;
           u_int8_t flag = 0;
+          int currRank = getRank(movingToIndex);
+          int currFile = getFileNum(movingToIndex);
+          if(abs(currRank - lastRank) > 1 || abs(currFile - lastFile) > 1) break;
+          lastRank = currRank;
+          lastFile = currFile;
           if(this->enemyPeices & u_int64_t(1)<<movingToIndex) flag = 4;
           move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag);
           possibleKnightMoves.push_back(move);
@@ -403,16 +461,6 @@ std::vector<u_int16_t> Chessboard::getLegalMovesKnight(int currIndex){
   }
   return possibleKnightMoves;
 }
-
-int getRank(int index){
-  return floor(index/8);
-}
-
-std::string getFile(int index){
-  std::vector<std::string> files = {"a", "b", "c", "d", "e", "f", "g", "h"};
-  return files[index%8];
-}
-
 int getIndexFromAlg(std::string algMove){
   std::string currChar = "";
   currChar = algMove.at(1);
@@ -562,15 +610,24 @@ Chessboard Chessboard::configureBoardFromAlgMove(std::string rankAndFile){
 }
 
 std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
+  int orginalRank = getRank(currIndex);
+  int originalFile = getFileNum(currIndex);
   std::vector<u_int16_t> possiblePawnMoves = {};
   int startingIndex = 0;
   if((this->yourPawns & u_int64_t(1)<<currIndex) & (this->yourPawnsEligableForDoubleMove & (u_int8_t(1)<<(currIndex%8)))) startingIndex = 1;
   for(int i = startingIndex; i<size(this->pawnMoves); i++){
+    int lastRank = getRank(currIndex);
+    int lastFile = getFileNum(currIndex);
     for(int j = 0; j<size(this->pawnMoves[i]); j++){
       int movingToIndex = currIndex+this->pawnMoves[i][j];
         if(movingToIndex >= 0 && movingToIndex < 64 && !(this->yourPeices & (u_int64_t(1) << movingToIndex))){
           u_int16_t move = 0;
           std::vector<u_int8_t> flag = {};
+          int currRank = getRank(movingToIndex);
+          int currFile = getFileNum(movingToIndex);
+          if(abs(currRank - lastRank) > 1 || abs(currFile - lastFile) > 1) break;
+          lastRank = currRank;
+          lastFile = currFile;
           switch(i)
           {
           case 0:
@@ -602,6 +659,19 @@ std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
               }
             }
             break;
+            case 3:
+            if((this->enemyPeices & (u_int64_t(1)<<movingToIndex)) != u_int64_t(0)){
+              if(int(getRank(movingToIndex)) ==  int(this->enemyRank)){
+                flag.push_back(10);
+                flag.push_back(11);
+                flag.push_back(12);
+                flag.push_back(13);
+              }
+              else{
+                flag.push_back(14);
+              }
+            }
+            break;
           default:
             std::cerr << "Get Legal Pawn Moves is Broken" << "\n";
             break;
@@ -611,7 +681,7 @@ std::vector<u_int16_t> Chessboard::getLegalMovesPawn(int currIndex){
             move = ((((u_int16_t(currIndex) << 6) | movingToIndex) << 4) | flag[k]);
             possiblePawnMoves.push_back(move);
           #ifdef DEBUG_PRINT_ENABLED
-            std::cout << "Pawn Move Found: " << move << " ";
+            std::cout << "Pawn Move Found: " << move << " "<< this->moveToLongAlgebraic(move);
             switch(flag[k]){
               case 0:
                 std::cout<<"Quiet Move";
@@ -1093,7 +1163,7 @@ std::vector<std::vector<u_int16_t>> Chessboard::removeCheckMoves(std::vector<std
     std::cout << "Noncheck moves: " << "\n";
     for(int i=0; i<size(nonCheckMoves); i++){
       for(int j=0; j<size(nonCheckMoves[i]); j++){
-        std::cout << "i: " << i<< " move: "<< nonCheckMoves[i][j]<< "\n";
+        std::cout << "i: " << i<< " move: "<< nonCheckMoves[i][j]<< this->moveToLongAlgebraic(nonCheckMoves[i][j])<<"\n";
       }
     }
   #endif
