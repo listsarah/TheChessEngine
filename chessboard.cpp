@@ -49,6 +49,10 @@ void Chessboard::configureBoards(std::string fen){
   if(fen == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"){
     this->yourPawnsEligableForDoubleMove = 0b11111111;
     this->enemyPawnsEligableForDoubleMove = 0b11111111;
+    this->yourKingSideCastlingLegal = true;
+    this->yourQueenSideCastlingLegal = true;
+    this->enemyKingSideCastlingLegal = true;
+    this->enemyQueenSideCastlingLegal = true;
   }
 
   for(int i = 0; i<fen.length(); i++){
@@ -461,6 +465,13 @@ std::vector<u_int16_t> Chessboard::getLegalMovesKnight(int currIndex){
   }
   return possibleKnightMoves;
 }
+
+bool Chessboard::checkIfCastlingIsLegal(int currIndex){
+  if(this->yourKingSideCastlingLegal){
+    if()
+  }
+}
+
 int getIndexFromAlg(std::string algMove){
   std::string currChar = "";
   currChar = algMove.at(1);
@@ -1124,6 +1135,11 @@ void Chessboard::switchColor(){
 
             this->yourPeices = this->enemyPeices;
             this->enemyPeices = intermediate.yourPeices;
+
+            this->yourKingSideCastlingLegal = this->enemyKingSideCastlingLegal;
+            this->yourQueenSideCastlingLegal = this->enemyQueenSideCastlingLegal;
+            this->enemyKingSideCastlingLegal = intermediate.yourKingSideCastlingLegal;
+            this->enemyQueenSideCastlingLegal = intermediate.yourQueenSideCastlingLegal;
         }
 
 

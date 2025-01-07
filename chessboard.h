@@ -34,6 +34,10 @@ class Chessboard {
         u_int8_t yourPawnsEligableForDoubleMove;
         u_int8_t enemyPawnsEligableForDoubleMove;
         int enemyRank;
+        bool yourKingSideCastlingLegal;
+        bool yourQueenSideCastlingLegal;
+        bool enemyKingSideCastlingLegal;
+        bool enemyQueenSideCastlingLegal;
 
         std::vector<int> straightLeftMoves = {-1, -2, -3, -4, -5, -6, -7};
         std::vector<int> straightRightMoves = {1, 2, 3, 4, 5, 6, 7};
@@ -65,6 +69,8 @@ class Chessboard {
         std::vector<u_int16_t> getLegalMovesBishop(int currIndex);
         std::vector<u_int16_t> getLegalMovesKnight(int currIndex);
         std::vector<u_int16_t> getLegalMovesPawn(int currIndex);
+
+        bool checkIfCastlingIsLegal(int currIndex);
 
         std::vector<std::vector<u_int16_t>> removeCheckMoves(std::vector<std::vector<u_int16_t>> fullMoveList);
         std::vector<Chessboard> movesToBoards(std::vector<std::vector<u_int16_t>> moves);
