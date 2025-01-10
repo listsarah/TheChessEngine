@@ -132,6 +132,11 @@ class Chessboard {
             this->rookMoves = other.rookMoves;
             this->bishopMoves = other.bishopMoves;
             this->knightMoves = other.knightMoves;
+
+            this->yourKingSideCastlingLegal = other.yourKingSideCastlingLegal;
+            this->yourQueenSideCastlingLegal = other.yourQueenSideCastlingLegal;
+            this->enemyKingSideCastlingLegal = other.enemyKingSideCastlingLegal;
+            this->enemyQueenSideCastlingLegal = other.enemyQueenSideCastlingLegal;
         }
 
 };
